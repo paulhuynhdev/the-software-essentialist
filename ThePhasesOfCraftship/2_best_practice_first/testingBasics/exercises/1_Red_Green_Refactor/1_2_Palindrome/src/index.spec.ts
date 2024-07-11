@@ -19,4 +19,10 @@ describe("palindrome checker", () => {
     const result = palindromeChecker.check("MoM");
     expect(result).toBeTruthy();
   });
+
+  it('should return false when input string is "Momx"', () => {
+    const palindromeChecker = new PalindromeChecker();
+    const result = palindromeChecker.check("Momx");
+    expect(result).toBeTruthy();
+  });
 });
