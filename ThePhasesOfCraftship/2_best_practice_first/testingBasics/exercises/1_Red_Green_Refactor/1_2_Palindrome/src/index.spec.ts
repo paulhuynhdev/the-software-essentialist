@@ -30,4 +30,9 @@ describe("palindrome checker", () => {
     const result = palindromeChecker.check("Was It A Rat I Saw");
     expect(result).toBeTruthy();
   });
+
+  it('should return true when input string is "Never Odd or Even"', () => {
+    const result = palindromeChecker.check("Never Odd or Even");
+    expect(result).toBeTruthy();
+  });
 });
