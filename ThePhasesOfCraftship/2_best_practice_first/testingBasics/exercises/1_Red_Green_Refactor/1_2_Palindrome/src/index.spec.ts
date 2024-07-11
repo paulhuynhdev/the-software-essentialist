@@ -25,4 +25,9 @@ describe("palindrome checker", () => {
     const result = palindromeChecker.check("Momx");
     expect(result).toBeFalsy();
   });
+
+  it('should return true when input string is "Was It A Rat I Saw"', () => {
+    const result = palindromeChecker.check("Was It A Rat I Saw");
+    expect(result).toBeTruthy();
+  });
 });
