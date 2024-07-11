@@ -3,11 +3,18 @@ class PalindromeChecker {
 
   public check(inputStr: string): boolean {
     const cleanedString = inputStr.replace(/[^A-Za-z0-9]/g, "").toLowerCase();
-    const reversedStr = cleanedString.split("").reverse().join("");
-    const isSameString =
-      cleanedString.toLowerCase() === reversedStr.toLowerCase();
+    let left = 0;
+    let right = cleanedString.length - 1;
 
-    return !!isSameString;
+    while (left < right) {
+      if (cleanedString[left] !== cleanedString[right]) {
+        return false;
+      }
+      left++;
+      right--;
+    }
+
+    return true;
   }
 }
 
