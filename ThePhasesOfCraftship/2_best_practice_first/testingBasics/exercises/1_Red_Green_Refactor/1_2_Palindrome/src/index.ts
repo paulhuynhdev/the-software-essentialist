@@ -3,7 +3,8 @@ class PalindromeChecker {
 
   public check(inputStr: string): boolean {
     const reversedStr = inputStr.split("").reverse().join("");
-    return inputStr.toLowerCase() === reversedStr.toLowerCase();
+    const isSameString = inputStr.toLowerCase() === reversedStr.toLowerCase();
+    return isSameString ? true : false;
   }
 }
 
