@@ -2,7 +2,8 @@ class PalindromeChecker {
   constructor() {}
 
   public check(inputStr: string): boolean {
-    return true;
+    const reversedStr = inputStr.split("").reverse().join("");
+    return inputStr === reversedStr;
   }
 }
 
