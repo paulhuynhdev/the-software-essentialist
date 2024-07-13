@@ -1,4 +1,4 @@
-type Sequence = number[];
+export type Sequence = number[];
 
 class StatsCalculator {
   sequence: Sequence;
