@@ -10,7 +10,7 @@ describe("password validator", () => {
 
   test("should return isValid true and empty errors for 12345", () => {
     // arrange
-    const inputPassword = "12345";
+    const inputPassword = "12345A";
     // act
     const result = passwordValidator.validate(inputPassword);
     // assert

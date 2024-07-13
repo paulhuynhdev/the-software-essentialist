@@ -20,6 +20,11 @@ class PasswordValidator {
       result.errors.push("Password must contain at least one digit");
     }
 
+    if (!/[A-Z]/.test(password)) {
+      result.isValid = false;
+      result.errors.push("Password must contain at least one uppercase letter");
+    }
+
     return result;
   }
 }
