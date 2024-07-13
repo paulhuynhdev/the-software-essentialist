@@ -53,4 +53,16 @@ describe("password validator", () => {
       "Password must contain at least one digit"
     );
   });
+
+  test("return is isValid false and error when not contain at least one uppercase letter", () => {
+    // arrange
+    const inputPassword = "lowercase1";
+    // act
+    const result = passwordValidator.validate(inputPassword);
+    // assert
+    expect(result.isValid).toBeFalsy();
+    expect(result.errors[0]).toEqual(
+      "Password must contain at least one uppercase letter"
+    );
+  });
 });
