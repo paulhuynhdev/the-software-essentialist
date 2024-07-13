@@ -15,6 +15,11 @@ class PasswordValidator {
       result.errors.push("Password length must be between 5 and 15 characters");
     }
 
+    if (!/\d/.test(password)) {
+      result.isValid = false;
+      result.errors.push("Password must contain at least one digit");
+    }
+
     return result;
   }
 }

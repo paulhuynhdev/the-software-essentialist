@@ -44,13 +44,13 @@ describe("password validator", () => {
 
   test("return is isValid false and error when not contain at least one digit", () => {
     // arrange
-    const inputPassword = "admin1";
+    const inputPassword = "admin";
     // act
     const result = passwordValidator.validate(inputPassword);
     // assert
     expect(result.isValid).toBeFalsy();
     expect(result.errors[0]).toEqual(
-      "Password must contain at least one character"
+      "Password must contain at least one digit"
     );
   });
 });
