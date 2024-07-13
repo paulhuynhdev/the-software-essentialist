@@ -41,4 +41,16 @@ describe("password validator", () => {
       "Password length must be between 5 and 15 characters"
     );
   });
+
+  test("return is isValid false and error when not contain at least one digit", () => {
+    // arrange
+    const inputPassword = "admin1";
+    // act
+    const result = passwordValidator.validate(inputPassword);
+    // assert
+    expect(result.isValid).toBeFalsy();
+    expect(result.errors[0]).toEqual(
+      "Password must contain at least one character"
+    );
+  });
 });
