@@ -1,9 +1,14 @@
+import { describe, test, expect } from "@jest/globals";
 
-describe('password validator', () => {
-
-  test('hello', () => {
-    expect("between 5 and 15").toContain('5 and 15')
-  })
-})
-
-
+describe("password validator", () => {
+  test("should return isValid true and empty errors for 12345", () => {
+    // arrange
+    const inputPassword = 12345;
+    const passwordValidator = new PasswordValidator();
+    // act
+    const result = passwordValidator.validate(inputPassword);
+    // assert
+    expect(result.isValid).toBeTruthy();
+    expect(result.errors).toEqual([]);
+  });
+});
