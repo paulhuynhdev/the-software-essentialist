@@ -50,4 +50,14 @@ describe("stats calculator", () => {
     // assert
     expect(result).toEqual(6);
   });
+
+  it("should return 0 as number of element from sequence []", () => {
+    // arrange
+    const sequence: Sequence = [];
+    const statsCalculator = new StatsCalculator(sequence);
+    // act
+    const result = statsCalculator.countElement();
+    // assert
+    expect(result).toEqual(0);
+  });
 });
