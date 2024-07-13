@@ -10,7 +10,7 @@ class PasswordValidator {
       errors: [],
     };
 
-    if (password.length < 5) {
+    if (password.length < 5 || password.length > 15) {
       result.isValid = false;
       result.errors.push("Password length must be between 5 and 15 characters");
     }
