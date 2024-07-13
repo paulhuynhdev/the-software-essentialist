@@ -65,4 +65,40 @@ describe("password validator", () => {
       "Password must contain at least one uppercase letter"
     );
   });
+
+  test("return is isValid false and non uppercase error when password is maxwell1_c", () => {
+    // arrange
+    const inputPassword = "maxwell1_c";
+    // act
+    const result = passwordValidator.validate(inputPassword);
+    // assert
+    expect(result.isValid).toBeFalsy();
+    expect(result.errors[0]).toEqual(
+      "Password must contain at least one uppercase letter"
+    );
+  });
+
+  test("return is isValid false and non digit error when password is maxwellTheBe", () => {
+    // arrange
+    const inputPassword = "maxwellTheBe";
+    // act
+    const result = passwordValidator.validate(inputPassword);
+    // assert
+    expect(result.isValid).toBeFalsy();
+    expect(result.errors[0]).toEqual(
+      "Password must contain at least one digit"
+    );
+  });
+
+  test("return is isValid false and length error when password is thePhysical1234567", () => {
+    // arrange
+    const inputPassword = "thePhysical1234567";
+    // act
+    const result = passwordValidator.validate(inputPassword);
+    // assert
+    expect(result.isValid).toBeFalsy();
+    expect(result.errors[0]).toEqual(
+      "Password length must be between 5 and 15 characters"
+    );
+  });
 });
