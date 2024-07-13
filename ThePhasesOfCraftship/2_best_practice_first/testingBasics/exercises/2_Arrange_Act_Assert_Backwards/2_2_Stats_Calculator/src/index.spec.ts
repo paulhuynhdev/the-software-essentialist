@@ -30,4 +30,14 @@ describe("stats calculator", () => {
     // assert
     expect(result).toEqual(53);
   });
+
+  it("should return undefined as maximum value from sequence []", () => {
+    // arrange
+    const sequence: Sequence = [];
+    const statsCalculator = new StatsCalculator(sequence);
+    // act
+    const result = statsCalculator.max();
+    // assert
+    expect(result).toEqual(undefined);
+  });
 });
