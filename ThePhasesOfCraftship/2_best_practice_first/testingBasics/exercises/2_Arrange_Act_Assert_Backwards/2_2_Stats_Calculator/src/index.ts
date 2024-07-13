@@ -18,6 +18,18 @@ class StatsCalculator {
 
     return minNumber;
   }
+
+  public max() {
+    let maxNumber;
+
+    for (const number of this.sequence) {
+      if (maxNumber === undefined || number > maxNumber) {
+        maxNumber = number;
+      }
+    }
+
+    return maxNumber;
+  }
 }
 
 export default StatsCalculator;
