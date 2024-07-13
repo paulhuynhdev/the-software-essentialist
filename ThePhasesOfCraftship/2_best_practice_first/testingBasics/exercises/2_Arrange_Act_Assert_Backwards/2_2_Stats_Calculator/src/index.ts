@@ -8,18 +8,15 @@ class StatsCalculator {
   }
 
   public min() {
-    let result;
+    let minNumber;
 
-    for (const n of this.sequence) {
-      if (result === undefined) {
-        result = n;
-      }
-      if (n < result) {
-        result = n;
+    for (const number of this.sequence) {
+      if (minNumber === undefined || number < minNumber) {
+        minNumber = number;
       }
     }
 
-    return result;
+    return minNumber;
   }
 }
 
