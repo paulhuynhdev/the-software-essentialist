@@ -1,11 +1,16 @@
-import { describe, test, expect } from "@jest/globals";
+import { describe, test, expect, beforeEach } from "@jest/globals";
 import PasswordValidator from "./PasswordValidator";
 
 describe("password validator", () => {
+  let passwordValidator: PasswordValidator;
+
+  beforeEach(() => {
+    passwordValidator = new PasswordValidator();
+  });
+
   test("should return isValid true and empty errors for 12345", () => {
     // arrange
     const inputPassword = "12345";
-    const passwordValidator = new PasswordValidator();
     // act
     const result = passwordValidator.validate(inputPassword);
     // assert
@@ -16,7 +21,6 @@ describe("password validator", () => {
   test("should return isValid false and errors for 1234 password", () => {
     // arrange
     const inputPassword = "1234";
-    const passwordValidator = new PasswordValidator();
     // act
     const result = passwordValidator.validate(inputPassword);
     // assert
@@ -29,7 +33,6 @@ describe("password validator", () => {
   test("should return isValid false and error for sixteencharacter password", () => {
     // arrange
     const inputPassword = "sixteencharacter";
-    const passwordValidator = new PasswordValidator();
     // act
     const result = passwordValidator.validate(inputPassword);
     // assert
