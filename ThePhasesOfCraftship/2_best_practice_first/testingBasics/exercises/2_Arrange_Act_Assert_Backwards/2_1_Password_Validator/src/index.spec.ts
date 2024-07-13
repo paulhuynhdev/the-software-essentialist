@@ -8,97 +8,49 @@ describe("password validator", () => {
     passwordValidator = new PasswordValidator();
   });
 
-  test("should return isValid true and empty errors for 12345", () => {
-    // arrange
-    const inputPassword = "12345A";
-    // act
-    const result = passwordValidator.validate(inputPassword);
-    // assert
-    expect(result.isValid).toBeTruthy();
-    expect(result.errors).toEqual([]);
+  describe("validate password length", () => {
+    test.each([
+      ["12345A", true, []],
+      ["1234", false, ["Password length must be between 5 and 15 characters"]],
+      [
+        "thePhysical1234567",
+        false,
+        ["Password length must be between 5 and 15 characters"],
+      ],
+    ])("should validate password '%s'", (inputPassword, isValid, errors) => {
+      const result = passwordValidator.validate(inputPassword);
+      expect(result.isValid).toEqual(isValid);
+      expect(result.errors[0]).toEqual(errors[0]);
+    });
   });
 
-  test("should return isValid false and errors for 1234 password", () => {
-    // arrange
-    const inputPassword = "1234";
-    // act
-    const result = passwordValidator.validate(inputPassword);
-    // assert
-    expect(result.isValid).toBeFalsy();
-    expect(result.errors[0]).toEqual(
-      "Password length must be between 5 and 15 characters"
-    );
+  describe("digit requirement", () => {
+    test.each([
+      ["admin", false, ["Password must contain at least one digit"]],
+      ["maxwellTheBe", false, ["Password must contain at least one digit"]],
+    ])("should validate password '%s'", (input, isValid, errors) => {
+      const result = passwordValidator.validate(input);
+      expect(result.isValid).toBe(isValid);
+      expect(result.errors).toContain(errors[0]);
+    });
   });
 
-  test("should return isValid false and error for sixteencharacter password", () => {
-    // arrange
-    const inputPassword = "sixteencharacter";
-    // act
-    const result = passwordValidator.validate(inputPassword);
-    // assert
-    expect(result.isValid).toBeFalsy();
-    expect(result.errors[0]).toEqual(
-      "Password length must be between 5 and 15 characters"
-    );
-  });
-
-  test("return is isValid false and error when not contain at least one digit", () => {
-    // arrange
-    const inputPassword = "admin";
-    // act
-    const result = passwordValidator.validate(inputPassword);
-    // assert
-    expect(result.isValid).toBeFalsy();
-    expect(result.errors[0]).toEqual(
-      "Password must contain at least one digit"
-    );
-  });
-
-  test("return is isValid false and error when not contain at least one uppercase letter", () => {
-    // arrange
-    const inputPassword = "lowercase1";
-    // act
-    const result = passwordValidator.validate(inputPassword);
-    // assert
-    expect(result.isValid).toBeFalsy();
-    expect(result.errors[0]).toEqual(
-      "Password must contain at least one uppercase letter"
-    );
-  });
-
-  test("return is isValid false and non uppercase error when password is maxwell1_c", () => {
-    // arrange
-    const inputPassword = "maxwell1_c";
-    // act
-    const result = passwordValidator.validate(inputPassword);
-    // assert
-    expect(result.isValid).toBeFalsy();
-    expect(result.errors[0]).toEqual(
-      "Password must contain at least one uppercase letter"
-    );
-  });
-
-  test("return is isValid false and non digit error when password is maxwellTheBe", () => {
-    // arrange
-    const inputPassword = "maxwellTheBe";
-    // act
-    const result = passwordValidator.validate(inputPassword);
-    // assert
-    expect(result.isValid).toBeFalsy();
-    expect(result.errors[0]).toEqual(
-      "Password must contain at least one digit"
-    );
-  });
-
-  test("return is isValid false and length error when password is thePhysical1234567", () => {
-    // arrange
-    const inputPassword = "thePhysical1234567";
-    // act
-    const result = passwordValidator.validate(inputPassword);
-    // assert
-    expect(result.isValid).toBeFalsy();
-    expect(result.errors[0]).toEqual(
-      "Password length must be between 5 and 15 characters"
-    );
+  describe("uppercase letter requirement", () => {
+    test.each([
+      [
+        "lowercase1",
+        false,
+        ["Password must contain at least one uppercase letter"],
+      ],
+      [
+        "maxwell1_c",
+        false,
+        ["Password must contain at least one uppercase letter"],
+      ],
+    ])("should validate password '%s'", (input, isValid, errors) => {
+      const result = passwordValidator.validate(input);
+      expect(result.isValid).toBe(isValid);
+      expect(result.errors).toEqual(errors);
+    });
   });
 });
