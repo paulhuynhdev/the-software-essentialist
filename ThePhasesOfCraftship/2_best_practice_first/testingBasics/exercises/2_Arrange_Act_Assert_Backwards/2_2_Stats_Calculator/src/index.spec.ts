@@ -20,4 +20,14 @@ describe("stats calculator", () => {
     // assert
     expect(result).toEqual(undefined);
   });
+
+  it("should return 53 as maximum value from sequence [2, 4, 21, -8, 53, 40]", () => {
+    // arrange
+    const sequence: Sequence = [2, 4, 21, -8, 53, 40];
+    const statsCalculator = new StatsCalculator(sequence);
+    // act
+    const result = statsCalculator.max();
+    // assert
+    expect(result).toEqual(53);
+  });
 });
