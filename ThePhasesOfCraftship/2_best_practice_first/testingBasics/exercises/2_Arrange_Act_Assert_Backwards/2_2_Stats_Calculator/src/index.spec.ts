@@ -60,4 +60,14 @@ describe("stats calculator", () => {
     // assert
     expect(result).toEqual(0);
   });
+
+  it("should return 18.666666666667 as average value from sequence [2, 4, 21, -8, 53, 40]", () => {
+    // arrange
+    const sequence: Sequence = [2, 4, 21, -8, 53, 40];
+    const statsCalculator = new StatsCalculator(sequence);
+    // act
+    const result = statsCalculator.average();
+    // assert
+    expect(result).toEqual(18.666666666667);
+  });
 });
