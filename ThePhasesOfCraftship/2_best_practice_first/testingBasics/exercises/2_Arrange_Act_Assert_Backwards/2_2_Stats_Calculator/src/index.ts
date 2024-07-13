@@ -40,6 +40,17 @@ class StatsCalculator {
 
     return count;
   }
+
+  public average() {
+    let sum = 0;
+
+    for (const number of this.sequence) {
+      sum += number;
+    }
+
+    const average = sum / this.sequence.length;
+    return parseFloat(average.toFixed(12));
+  }
 }
 
 export default StatsCalculator;
