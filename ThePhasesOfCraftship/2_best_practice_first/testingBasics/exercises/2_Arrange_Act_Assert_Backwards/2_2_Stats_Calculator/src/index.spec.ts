@@ -70,4 +70,14 @@ describe("stats calculator", () => {
     // assert
     expect(result).toEqual(18.666666666667);
   });
+
+  it("should return NaN as average value from sequence []", () => {
+    // arrange
+    const sequence: Sequence = [];
+    const statsCalculator = new StatsCalculator(sequence);
+    // act
+    const result = statsCalculator.average();
+    // assert
+    expect(result).toBeNaN();
+  });
 });
