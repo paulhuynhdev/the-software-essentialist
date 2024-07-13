@@ -30,6 +30,16 @@ class StatsCalculator {
 
     return maxNumber;
   }
+
+  public countElement() {
+    let count = 0;
+
+    for (const _ of this.sequence) {
+      count++;
+    }
+
+    return count;
+  }
 }
 
 export default StatsCalculator;
