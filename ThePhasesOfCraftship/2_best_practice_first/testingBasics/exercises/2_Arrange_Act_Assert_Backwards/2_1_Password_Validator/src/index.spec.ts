@@ -25,4 +25,17 @@ describe("password validator", () => {
       "Password length must be between 5 and 15 characters"
     );
   });
+
+  test("should return isValid false and error for sixteencharacter password", () => {
+    // arrange
+    const inputPassword = "sixteencharacter";
+    const passwordValidator = new PasswordValidator();
+    // act
+    const result = passwordValidator.validate(inputPassword);
+    // assert
+    expect(result.isValid).toBeFalsy();
+    expect(result.errors[0]).toEqual(
+      "Password length must be between 5 and 15 characters"
+    );
+  });
 });
