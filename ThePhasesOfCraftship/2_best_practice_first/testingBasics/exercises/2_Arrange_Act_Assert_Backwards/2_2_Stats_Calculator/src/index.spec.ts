@@ -40,4 +40,14 @@ describe("stats calculator", () => {
     // assert
     expect(result).toEqual(undefined);
   });
+
+  it("should return 6 as number of element from sequence [2, 4, 21, -8, 53, 40]", () => {
+    // arrange
+    const sequence: Sequence = [2, 4, 21, -8, 53, 40];
+    const statsCalculator = new StatsCalculator(sequence);
+    // act
+    const result = statsCalculator.countElement();
+    // assert
+    expect(result).toEqual(6);
+  });
 });
