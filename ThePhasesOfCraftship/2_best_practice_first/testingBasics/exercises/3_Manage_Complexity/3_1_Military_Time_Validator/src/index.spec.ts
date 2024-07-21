@@ -13,4 +13,10 @@ describe("military time validator", () => {
     const result = militaryTimeValidator.validateTimeRange();
     expect(result).toEqual("yes");
   });
+
+  it("should return 'no' when validating '25:00 - 12:23'", () => {
+    const militaryTimeValidator = new MilitaryTimeValidator("25:00 - 12:23");
+    const result = militaryTimeValidator.validateTimeRange();
+    expect(result).toEqual("no");
+  });
 });
