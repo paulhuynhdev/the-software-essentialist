@@ -4,7 +4,7 @@ import MilitaryTimeValidator from "./index";
 describe("military time validator", () => {
   it("should return 'yes' when validating '01:12 - 14:32'", () => {
     const militaryTimeValidator = new MilitaryTimeValidator("01:12 - 14:32");
-    const result = militaryTimeValidator.validate;
+    const result = militaryTimeValidator.validateTimeRange();
     expect(result).toEqual("yes");
   });
 });
