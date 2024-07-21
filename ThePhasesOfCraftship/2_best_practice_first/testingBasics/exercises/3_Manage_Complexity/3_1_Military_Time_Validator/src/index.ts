@@ -17,11 +17,16 @@ class MilitaryTimeValidator {
   }
 
   private isValidStartTime(): boolean {
-    return true;
+    return this.isValidTimeFormat(this.startTime);
   }
 
   private isValidEndTime(): boolean {
-    return true;
+    return this.isValidTimeFormat(this.endTime);
+  }
+
+  private isValidTimeFormat(time: string): boolean {
+    const regex = /^([01]\d|2[0-3]):([0-5]\d)$/;
+    return regex.test(time);
   }
 
   private isEndTimeAfterStartTime() {
@@ -29,11 +34,13 @@ class MilitaryTimeValidator {
   }
 
   get endTime(): string {
-    return "2";
+    const times = this.timeRange.split(" - ");
+    return times[1];
   }
 
   get startTime(): string {
-    return "1";
+    const times = this.timeRange.split(" - ");
+    return times[0];
   }
 }
 
