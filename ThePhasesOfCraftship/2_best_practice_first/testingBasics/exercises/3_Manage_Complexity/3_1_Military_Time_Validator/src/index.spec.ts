@@ -7,4 +7,10 @@ describe("military time validator", () => {
     const result = militaryTimeValidator.validateTimeRange();
     expect(result).toEqual("yes");
   });
+
+  it("should return 'yes' when validating '22:00 - 23:12'", () => {
+    const militaryTimeValidator = new MilitaryTimeValidator("22:00 - 23:12");
+    const result = militaryTimeValidator.validateTimeRange();
+    expect(result).toEqual("yes");
+  });
 });
