@@ -32,6 +32,7 @@ export class StudentEnrollmentBuilder {
   }
 
   async build() {
+    console.log("build...");
     let classRoom = await this.classRoomBuilder.build();
     let student = await this.studentBuilder.build();
 
