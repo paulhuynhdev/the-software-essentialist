@@ -16,7 +16,7 @@ class AssignmentBuilder {
     };
   }
 
-  andClassroom(classRoomBuilder: ClassRoomBuilder) {
+  from(classRoomBuilder: ClassRoomBuilder) {
     this.classRoomBuilder = classRoomBuilder;
     return this;
   }

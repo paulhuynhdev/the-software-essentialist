@@ -8,7 +8,7 @@ export class ClassRoomBuilder {
     this.classRoom = {};
   }
 
-  withName(name: string) {
+  withClassName(name: string) {
     this.classRoom.name = name;
     return this;
   }

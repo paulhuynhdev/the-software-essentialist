@@ -11,6 +11,16 @@ export class StudentEnrollmentBuilder {
     this.studentBuilder = new StudentBuilder();
   }
 
+  from(classBuilder: ClassRoomBuilder) {
+    this.classRoomBuilder = classBuilder;
+    return this;
+  }
+
+  and(studentBuilder: StudentBuilder) {
+    this.studentBuilder = studentBuilder;
+    return this;
+  }
+
   andClassroom(classRoomBuilder: ClassRoomBuilder) {
     this.classRoomBuilder = classRoomBuilder;
     return this;

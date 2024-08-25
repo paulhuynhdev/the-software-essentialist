@@ -1,11 +1,10 @@
-import { StudentEnrollmentBuilder } from "./../fixtures/studentEnrollmentBuilder";
-import { test, beforeAll } from "@jest/globals";
+import { beforeAll, expect } from "@jest/globals";
+import request from "supertest";
 import { resetDatabase } from "../fixtures/reset";
 import { defineFeature, loadFeature } from "jest-cucumber";
 import path from "path";
-import { ClassRoomBuilder } from "../fixtures/classRoomBuilder";
-import { StudentBuilder } from "../fixtures/studentBuilder";
-import { AssignmentBuilder } from "../fixtures/assignmentBuilder";
+import { Factory } from "../fixtures/factory";
+import { app } from "../../src";
 
 const feature = loadFeature(
   path.join(__dirname, "../features/createClassRoom.feature")
@@ -18,28 +17,47 @@ defineFeature(feature, (test) => {
     let student: any;
     let assignment: any;
 
-    let studentEnrollmentBuilder: StudentEnrollmentBuilder =
-      new StudentEnrollmentBuilder();
-    let classroomBuilder: ClassRoomBuilder = new ClassRoomBuilder();
-    let studentBuilder: StudentBuilder = new StudentBuilder();
-    let assignmentBuilder: AssignmentBuilder = new AssignmentBuilder();
+    const f = new Factory()
 
     beforeAll(async () => {
       await resetDatabase();
     });
 
     given("there is an existing student enrolled to a class", async () => {
-      const enrollmentResult = await studentEnrollmentBuilder
-        .andClassroom(classroomBuilder.withName("Math"))
-        .andStudent(studentBuilder.withName("Johnny").withRandomEmail())
+      const enrollmentResult = await f.anEnrolledStudent()
+        .from(f.aClassRoom().withClassName("Math"))
+        .and(f.aStudent())
         .build();
+
       student = enrollmentResult.student;
     });
 
     and("an assignment exists for the class", async () => {
-      assignment = await assignmentBuilder
-        .andClassroom(classroomBuilder.withName("Math"))
+      assignment = await f.anAssignment()
+        .from(f.aClassRoom().withClassName("Math"))
         .build();
+    });
+
+    when("I assign the student the assignment", async () => {
+      requestBody = {
+        studentId: student.id,
+        assignmentId: assignment.id,
+      };
+
+      response = await request(app)
+        .post("/student-assignments")
+        .send(requestBody);
+    });
+
+    then("the student should be assigned to the assignment", () => {
+      expect(response.status).toBe(201);
+      expect(response.body.data.studentId).toBeTruthy();
+      expect(response.body.data.assignmentId).toBeTruthy();
+      expect(response.body.data.grade).toBeDefined();
+      expect(response.body.data.status).toBeDefined();
+
+      expect(response.body.data.studentId).toBe(requestBody.studentId);
+      expect(response.body.data.assignmentId).toBe(requestBody.assignmentId);
     });
   });
 });
