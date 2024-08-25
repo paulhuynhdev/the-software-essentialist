@@ -7,6 +7,7 @@ import { faker } from "@faker-js/faker";
 import { WebServer } from "../../shared/http/webServer";
 import { RESTfulAPIDriver } from "../../shared/http/resfulAPIDriver";
 import { Server } from "http";
+import { getRandomPort } from "../../shared/getRandomPort";
 
 const feature = loadFeature(
   path.join(__dirname, "../features/assignStudentToAssignment.feature")
@@ -17,7 +18,8 @@ defineFeature(feature, (test) => {
   let driver: RESTfulAPIDriver;
   test("Assign a student to an assignment", ({ given, when, and, then }) => {
     beforeAll(async () => {
-      await webServer.start();
+      const randomPort = await getRandomPort();
+      await webServer.start(randomPort);
       driver = new RESTfulAPIDriver(webServer.getHttp() as Server);
 
       await resetDatabase();

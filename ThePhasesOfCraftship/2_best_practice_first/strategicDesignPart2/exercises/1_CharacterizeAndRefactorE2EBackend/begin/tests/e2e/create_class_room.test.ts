@@ -14,6 +14,7 @@ import { faker } from "@faker-js/faker";
 import { RESTfulAPIDriver } from "../../shared/http/resfulAPIDriver";
 import { WebServer } from "../../shared/http/webServer";
 import { Server } from "http";
+import { getRandomPort } from "../../shared/getRandomPort";
 
 // type CreateClassInput = {
 //   name: string;
@@ -29,7 +30,8 @@ defineFeature(feature, (test) => {
 
   beforeAll(async () => {
     // Start the server
-    await webServer.start();
+    const randomPort = await getRandomPort();
+    await webServer.start(randomPort);
 
     driver = new RESTfulAPIDriver(webServer.getHttp() as Server);
     // Clear out the database (reset it)

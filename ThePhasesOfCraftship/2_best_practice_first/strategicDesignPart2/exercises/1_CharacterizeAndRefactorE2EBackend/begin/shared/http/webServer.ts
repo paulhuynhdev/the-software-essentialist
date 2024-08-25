@@ -80,9 +80,9 @@ export class WebServer {
     return express();
   }
 
-  public async start(): Promise<void> {
+  public async start(port: number): Promise<void> {
     // Kill the process running on the port if exist
-    const port = 3000;
+    // const port = 3000;
 
     return new Promise(async (resolve, reject) => {
       await ProcessService.killProcessOnPort(Number(port), () => {
