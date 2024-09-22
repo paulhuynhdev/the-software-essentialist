@@ -4,6 +4,10 @@
   "workspaces": [
     "packages/*"
   ],
+  "scripts": {
+    "start:dev:back": "npm run start:dev --workspace=@dddforum/backend",
+    "start:dev:front": "npm run start:dev --workspace=@dddforum/frontend"
+  },
   "devDependencies": {
     "@types/jest": "^29.5.12",
     "@types/node": "^18.16.19",

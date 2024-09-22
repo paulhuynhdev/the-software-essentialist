@@ -6,9 +6,7 @@
   "scripts": {
     "build": "rimraf ./build && tsc",
     "generate": "prisma generate",
-    "migrate": "prisma migrate dev",
-    "db:seed": "prisma db seed",
-    "db:reset": "rimraf ./dev.db && npm run migrate && npm run generate",
+    "migrate": "prisma migrate dev --schema=./src/shared/database/prisma/schema.prisma",
     "start:dev": "npm run migrate && npm run generate && npx nodemon",
     "start": "npm run build && node build/index.js",
     "lint": "eslint . --ext .ts",
