@@ -1,5 +1,8 @@
 import { Database } from "../../shared/database";
-import { UserEmailAlreadyExistException } from "../../shared/exceptions";
+import {
+  UserEmailAlreadyExistException,
+  UsernameAlreadyExistException,
+} from "../../shared/exceptions";
 import { CreateUserCommand } from "./userCommand";
 export class UserService {
   constructor(private db: Database) {}
@@ -12,7 +15,7 @@ export class UserService {
 
     const existingUserByUsername = await this.db.users.findUserByUsername(userDTO.username);
     if (existingUserByUsername) {
-      throw new UserEmailAlreadyExistException();
+      throw new UsernameAlreadyExistException();
     }
 
     const result = await this.db.users.save(userDTO);

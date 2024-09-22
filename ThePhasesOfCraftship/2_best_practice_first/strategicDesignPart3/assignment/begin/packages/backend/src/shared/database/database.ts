@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { generateRandomPassword } from "../utils/generateRandomPassword";
 
 type NewUser = {
   email: string;
@@ -50,8 +51,15 @@ export class Database {
   };
 
   private saveUser = async (newUser: NewUser) => {
+    const { email, firstName, lastName, username } = newUser;
     const user = await this.prisma.user.create({
-      data: newUser,
+      data: {
+        email,
+        username,
+        firstName,
+        lastName,
+        password: generateRandomPassword(10),
+      },
     });
 
     const member = await this.prisma.member.create({
