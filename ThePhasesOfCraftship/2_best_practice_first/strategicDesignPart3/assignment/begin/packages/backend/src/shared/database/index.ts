@@ -1,3 +1,3 @@
-import { Database } from "./database";
+import { Database, prisma } from "./database";
 
-export { Database };
+export { Database, prisma };

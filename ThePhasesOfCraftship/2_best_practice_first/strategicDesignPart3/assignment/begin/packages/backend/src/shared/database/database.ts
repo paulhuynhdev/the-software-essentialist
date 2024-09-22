@@ -1,6 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 import { generateRandomPassword } from "../utils/generateRandomPassword";
 
+export const prisma = new PrismaClient();
+
 type NewUser = {
   email: string;
   firstName: string;

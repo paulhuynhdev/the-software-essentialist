@@ -28,12 +28,6 @@ const initialUsers: User[] = [
   },
 ];
 
-const initialMemberUserIds = [
-  { memberId: 1, userId: 1 },
-  { memberId: 2, userId: 2 },
-  { memberId: 3, userId: 3 },
-];
-
 const initialPosts: Post[] = [
   {
     id: 1,
@@ -84,7 +78,13 @@ const initialPostVotes: Vote[] = [
 ];
 
 const initialPostComments: Comment[] = [
-  { id: 1, text: "I posted this!", memberId: 1, postId: 1, parentCommentId: null },
+  {
+    id: 1,
+    text: "I posted this!",
+    memberId: 1,
+    postId: 1,
+    parentCommentId: null,
+  },
   { id: 2, text: "Nice", memberId: 2, postId: 2, parentCommentId: null },
 ];
 
@@ -103,23 +103,23 @@ async function seed() {
     });
   }
 
-  for (const post of initialPosts) {
-    await prisma.post.create({
-      data: post,
-    });
-  }
+  // for (const post of initialPosts) {
+  //   await prisma.post.create({
+  //     data: post,
+  //   });
+  // }
 
-  for (const vote of initialPostVotes) {
-    await prisma.vote.create({
-      data: vote,
-    });
-  }
+  // for (const vote of initialPostVotes) {
+  //   await prisma.vote.create({
+  //     data: vote,
+  //   });
+  // }
 
-  for (const comment of initialPostComments) {
-    await prisma.comment.create({
-      data: comment,
-    });
-  }
+  // for (const comment of initialPostComments) {
+  //   await prisma.comment.create({
+  //     data: comment,
+  //   });
+  // }
 }
 
 seed();
