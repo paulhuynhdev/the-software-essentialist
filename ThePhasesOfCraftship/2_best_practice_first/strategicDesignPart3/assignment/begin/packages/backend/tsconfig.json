@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
+    "target": "es5",
     "module": "commonjs",
     "lib": ["es6"],
     "allowJs": true,
@@ -8,8 +8,9 @@
     "rootDir": "src",
     "strict": true,
     "esModuleInterop": true,
-    "types": ["node", "jest"],
-    "skipLibCheck": true
+    "types": ["node", "jest", "../../node_modules/.prisma/client"],
+    "skipLibCheck": true,
+    "resolveJsonModule": true
   },
   "include": ["src/**/*"],
   "exclude": ["src/**/*.spec.ts"]

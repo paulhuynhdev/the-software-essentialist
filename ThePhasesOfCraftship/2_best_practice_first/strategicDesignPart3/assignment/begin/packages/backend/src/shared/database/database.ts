@@ -22,9 +22,19 @@ export interface MemberPersistence {
 
 export class Database {
   users: UsersPersistence;
+  private connection: PrismaClient;
 
-  constructor(private prisma: PrismaClient) {
+  constructor() {
+    this.connection = new PrismaClient();
     this.users = this.buildUserPersistence();
+  }
+
+  getConnection() {
+    return this.connection;
+  }
+
+  async connect() {
+    await this.connection.$connect();
   }
 
   buildUserPersistence(): UsersPersistence {
@@ -35,7 +45,7 @@ export class Database {
     };
   }
   private findUserByUsername = async (username: string) => {
-    const user = await this.prisma.user.findFirst({
+    const user = await this.connection.user.findFirst({
       where: {
         username,
       },
@@ -44,7 +54,7 @@ export class Database {
   };
 
   private findUserByEmail = async (email: string) => {
-    const user = await this.prisma.user.findFirst({
+    const user = await this.connection.user.findFirst({
       where: {
         email,
       },
@@ -54,7 +64,7 @@ export class Database {
 
   private saveUser = async (newUser: NewUser) => {
     const { email, firstName, lastName, username } = newUser;
-    const user = await this.prisma.user.create({
+    const user = await this.connection.user.create({
       data: {
         email,
         username,
@@ -64,7 +74,7 @@ export class Database {
       },
     });
 
-    const member = await this.prisma.member.create({
+    const member = await this.connection.member.create({
       data: { userId: user.id },
     });
 

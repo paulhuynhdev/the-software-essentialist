@@ -6,11 +6,10 @@ import { ErrorExceptionHandler } from "../errors";
 import { Database } from "../database";
 
 const prisma = new PrismaClient();
-const db = new Database(prisma);
+const db = new Database();
 
 const errorHandler = new ErrorExceptionHandler();
 const userService = new UserService(db);
-
 const userController = new UserController(userService, errorHandler);
 
 const application = new Application(userController);

@@ -1,6 +1,7 @@
 export const ErrorExceptionType = {
   ValidationError: "ValidationError",
   UserEmailAlreadyExist: "UserEmailAlreadyExist",
+  UsernameAlreadyTaken: "UsernameAlreadyTaken",
   ServerError: "ServerError",
 };
 
