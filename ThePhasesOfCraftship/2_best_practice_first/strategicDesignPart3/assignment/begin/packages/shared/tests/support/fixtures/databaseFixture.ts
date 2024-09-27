@@ -43,7 +43,7 @@ export class DatabaseFixture {
             password: generateRandomPassword(10),
           },
         });
-      }),
+      })
     );
   }
 }

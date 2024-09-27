@@ -3,8 +3,6 @@ import type { Config } from "@jest/types";
 import { pathsToModuleNameMapper } from "ts-jest";
 import { compilerOptions } from "../../tsconfig.json";
 
-console.log("Resolved tsconfig.json path:", path.resolve(__dirname, "../../tsconfig.json"));
-
 const config: Config.InitialOptions = {
   displayName: "Backend (E2E)",
   testMatch: ["**/@(src|tests)/**/*.@(e2e).*"],
