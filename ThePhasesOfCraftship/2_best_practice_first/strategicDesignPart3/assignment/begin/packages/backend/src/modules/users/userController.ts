@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { CreateUserCommand } from "./userCommand";
 import { UserService } from "./userService";
 import express from "express";
-import { ErrorExceptionHandler, ErrorHandler } from "../../shared/errors";
+import { ErrorExceptionHandler } from "../../shared/errors";
 import { parseUserForResponse } from "../../shared/utils/parseUserForResponse";
 
 export class UserController {
@@ -23,7 +23,7 @@ export class UserController {
   }
 
   setupRoutes() {
-    this.router.post("/new", this.createUser.bind(this));
+    this.router.post("/users/new", this.createUser.bind(this));
   }
 
   private async createUser(req: Request, res: Response, next: NextFunction) {

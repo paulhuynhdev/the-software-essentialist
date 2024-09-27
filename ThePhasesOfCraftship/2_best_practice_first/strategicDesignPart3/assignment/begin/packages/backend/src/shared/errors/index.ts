@@ -16,6 +16,7 @@ export type ErrorHandler = (
 export class ErrorExceptionHandler {
   public handle(error: Error, req: Request, res: Response, next: NextFunction): Response {
     if (error instanceof InvalidRequestBodyException) {
+      console.log(error.statusCode)
       return res.status(error.statusCode).json({
         error: ErrorExceptionType.ValidationError,
         data: undefined,
@@ -35,7 +36,7 @@ export class ErrorExceptionHandler {
 
     if (error instanceof UsernameAlreadyExistException) {
       return res.status(error.statusCode).json({
-        error: ErrorExceptionType.UserEmailAlreadyExist,
+        error: ErrorExceptionType.UsernameAlreadyTaken,
         data: undefined,
         success: false,
         message: error.message,
