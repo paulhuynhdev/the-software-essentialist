@@ -1,17 +1,19 @@
-import { PrismaClient } from "@prisma/client";
-import { UserController } from "../../modules/users";
-import { UserService } from "../../modules/users";
-import { Application } from "./application";
 import { ErrorExceptionHandler } from "../errors";
-import { Database } from "../database";
+import { Config } from "../config";
 
-const prisma = new PrismaClient();
-const db = new Database();
+import { CompositionRoot } from "../composition/compositionRoot";
 
 const errorHandler = new ErrorExceptionHandler();
-const userService = new UserService(db);
-const userController = new UserController(userService, errorHandler);
 
-const application = new Application(userController);
+const config = new Config("start");
+const composition = CompositionRoot.createCompositionRoot(config.env, errorHandler);
+const webServer = composition.getWebServer();
+const dbConnection = composition.getDBConnection();
 
-export default application;
+export async function bootstrap() {
+  await dbConnection.connect();
+  await webServer.start();
+}
+
+export const app = webServer.getApplication();
+export const database = dbConnection;
