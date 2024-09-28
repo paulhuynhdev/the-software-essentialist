@@ -1,5 +1,5 @@
 import { WebServer } from "../../shared/http/webServer";
-import { ContactListAPI } from "./ContactListAPI";
+import { ContactListAPI } from "./contactListAPI";
 import { MarketingController } from "./marketingController";
 import { marketingErrorHandler } from "./marketingErrors";
 import { MarketingService } from "./marketingService";
