@@ -1,54 +1,44 @@
-import { Response } from "express";
-import { REASON_PHASE, STATUS_CODE } from "../constants";
+import { ErrorExceptionType, REASON_PHASE, STATUS_CODE } from "../constants";
 
 class HttpException extends Error {
-  statusCode: number;
-  isOperational: boolean;
-  data: null;
+  public type: string;
   constructor(
-    statusCode = STATUS_CODE.INTERNAL_SERVER_ERROR,
-    message = REASON_PHASE.INTERNAL_SERVER_ERROR,
-    data = null,
-    isOperational = true,
-    stack = ""
+    type: string = 'Custom HttpException',
+    message: string,
   ) {
     super(message);
-    this.statusCode = statusCode;
-    this.isOperational = isOperational;
-    this.data = data;
-
-    if (stack) {
-      this.stack = stack;
-    } else {
-      Error.captureStackTrace(this, this.constructor);
-    }
-  }
-
-  send(res: Response) {
-    return res.status(this.statusCode).json({
-      status: 0,
-      message: this.message,
-      data: this.data,
-    });
+    this.type = type;
   }
 }
 
 class InvalidRequestBodyException extends HttpException {
   constructor(missingKeys: string[]) {
     const message = "Body is missing required key: " + missingKeys.join(", ");
-    super(STATUS_CODE.BAD_REQUEST, message);
+    super(ErrorExceptionType.InvalidRequestBody, message);
   }
 }
 
 class UserEmailAlreadyExistException extends HttpException {
   constructor() {
-    super(STATUS_CODE.BAD_REQUEST, "User email already exist");
+    super(ErrorExceptionType.UserEmailAlreadyExist, "User email already exist");
   }
 }
 
 class UsernameAlreadyExistException extends HttpException {
   constructor() {
-    super(STATUS_CODE.BAD_REQUEST, "Username already exist");
+    super(ErrorExceptionType.UsernameAlreadyTaken, "Username already exist");
+  }
+}
+
+class UserNotFoundException extends HttpException {
+  constructor() {
+    super(ErrorExceptionType.UserNotFound, "User not found");
+  }
+}
+
+class ServerErrorException extends HttpException {
+  constructor() {
+    super(ErrorExceptionType.ServerError, "An error occurred while processing your request");
   }
 }
 
@@ -56,4 +46,7 @@ export {
   InvalidRequestBodyException,
   UserEmailAlreadyExistException,
   UsernameAlreadyExistException,
+  UserNotFoundException,
+  ServerErrorException,
+  HttpException,
 };

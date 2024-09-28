@@ -64,17 +64,16 @@ defineFeature(feature, (test) => {
       response = await request(app).post("/users/new").send(user);
     });
     then("I should see an error notifying me that my input is invalid", () => {
-      console.log(response.status)
       expect(response.status).toBe(400);
       expect(response.body.success).toBe(false);
-      expect(response.body.data).toBeUndefined();
+      expect(response.body.data).toBeNull();
       expect(response.body.error).toBeDefined();
     });
 
     and("I should not have been sent access to account details", () => {
       expect(response.status).toBe(400);
       expect(response.body.success).toBe(false);
-      expect(response.body.data).toBeUndefined();
+      expect(response.body.data).toBeNull();
       expect(response.body.error).toBeDefined();
     });
   });
@@ -106,7 +105,7 @@ defineFeature(feature, (test) => {
       for (const { body } of createUserResponses) {
         expect(body.error).toBeDefined();
         expect(body.success).toBeFalsy();
-        expect(body.error).toEqual(ErrorExceptionType.UserEmailAlreadyExist);
+        expect(body.error.code).toEqual('EmailAlreadyInUse');
       }
     });
 
@@ -114,7 +113,7 @@ defineFeature(feature, (test) => {
       createUserResponses.forEach((response) => {
         expect(response.status).toBe(400);
         expect(response.body.success).toBe(false);
-        expect(response.body.data).toBeUndefined();
+        expect(response.body.data).toBeNull();
         expect(response.body.error).toBeDefined();
       });
     });
@@ -160,7 +159,7 @@ defineFeature(feature, (test) => {
       for (const { body } of createUserResponses) {
         expect(body.error).toBeDefined();
         expect(body.success).toBeFalsy();
-        expect(body.error).toEqual(ErrorExceptionType.UsernameAlreadyTaken);
+        expect(body.error.code).toEqual(ErrorExceptionType.UsernameAlreadyTaken);
       }
     });
 
@@ -168,7 +167,7 @@ defineFeature(feature, (test) => {
       createUserResponses.forEach((response) => {
         expect(response.status).toBe(400);
         expect(response.body.success).toBe(false);
-        expect(response.body.data).toBeUndefined();
+        expect(response.body.data).toBeNull();
         expect(response.body.error).toBeDefined();
       });
     });

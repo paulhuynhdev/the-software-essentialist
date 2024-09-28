@@ -2,13 +2,13 @@ import { Request, Response, NextFunction } from "express";
 import { CreateUserCommand } from "./userCommand";
 import { UserService } from "./userService";
 import express from "express";
-import { ErrorExceptionHandler } from "../../shared/errors";
+import { ErrorHandler } from "../../shared/errors";
 import { parseUserForResponse } from "../../shared/utils/parseUserForResponse";
 
 export class UserController {
   private router: express.Router;
 
-  constructor(private userService: UserService, private errorHandler: ErrorExceptionHandler) {
+  constructor(private userService: UserService, private errorHandler: ErrorHandler) {
     this.router = express.Router();
     this.setupRoutes();
     this.setupErrorHandler();
@@ -19,11 +19,11 @@ export class UserController {
   }
 
   setupErrorHandler() {
-    this.router.use(this.errorHandler.handle);
+    this.router.use(this.errorHandler);
   }
 
   setupRoutes() {
-    this.router.post("/users/new", this.createUser.bind(this));
+    this.router.post("/new", this.createUser.bind(this));
   }
 
   private async createUser(req: Request, res: Response, next: NextFunction) {

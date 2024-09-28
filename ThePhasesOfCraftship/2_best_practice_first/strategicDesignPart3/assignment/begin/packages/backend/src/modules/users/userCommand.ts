@@ -3,7 +3,7 @@ import { isMissingKeys } from "@dddforum/backend/src/shared/utils/isMissingKeys"
 import { InvalidRequestBodyException } from "@dddforum/backend/src/shared/exceptions";
 
 export class CreateUserCommand {
-  constructor(public props: CreateUserParams) {}
+  constructor(public props: CreateUserParams) { }
 
   static fromRequest(body: unknown) {
     const requiredKeys = ["email", "firstName", "lastName", "username"];

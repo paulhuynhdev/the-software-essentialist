@@ -1,57 +1,43 @@
-import { UserController, UserService } from "../../modules";
-import { Environment } from "../config";
+import { Config } from "../config";
 import { Database } from "../database";
 import { WebServer } from "../http/webServer";
-import { ErrorExceptionHandler, ErrorHandler } from "../errors";
+import { MarketingModule } from "../../modules/marketings";
+import { UserModule } from "../../modules/users";
 
 export class CompositionRoot {
   private webServer: WebServer;
   private dbConnection: Database;
-  private context: Environment;
-  private errorHandler: ErrorExceptionHandler;
-  private usersService: UserService;
+  private config: Config;
+  private marketingModule: MarketingModule;
+  private userModule: UserModule;
   private static instance: CompositionRoot | null = null;
 
-  public static createCompositionRoot(context: Environment, errorHandler: ErrorExceptionHandler) {
+  public static createCompositionRoot(config: Config) {
     if (!CompositionRoot.instance) {
-      CompositionRoot.instance = new this(context, errorHandler);
+      CompositionRoot.instance = new this(config);
     }
     return CompositionRoot.instance;
   }
 
-  private constructor(context: Environment, errorHandler: ErrorExceptionHandler) {
-    this.context = context;
-    this.errorHandler = errorHandler;
+  private constructor(config: Config) {
+    this.config = config;
     this.dbConnection = this.createDBConnection();
-    this.usersService = this.createUserService();
+    this.marketingModule = this.createMarketingModule();
+    this.userModule = this.createUserModule();
     this.webServer = this.createWebServer();
+    this.mountRoutes();
   }
 
-  public getContext() {
-    return this.context;
+  mountRoutes() {
+    this.marketingModule.mountRouter(this.webServer)
+    this.userModule.mountRouter(this.webServer)
+  }
+  createMarketingModule(): MarketingModule {
+    return MarketingModule.build();
   }
 
-  private getUsersService() {
-    return this.usersService;
-  }
-
-  private getErrorHandler() {
-    return this.errorHandler;
-  }
-
-  private createUserService() {
-    const dbConnection = this.getDBConnection();
-    return new UserService(dbConnection);
-  }
-
-  private createControllers() {
-    const usersService = this.getUsersService();
-    const errorHandler = this.getErrorHandler();
-    const usersController = new UserController(usersService, errorHandler);
-
-    return {
-      usersController,
-    };
+  createUserModule(): any {
+    return UserModule.build(this.dbConnection);
   }
 
   private createDBConnection() {
@@ -68,8 +54,7 @@ export class CompositionRoot {
   }
 
   createWebServer() {
-    const controllers = this.createControllers();
-    return new WebServer({ port: 3000, env: this.context }, controllers);
+    return new WebServer({ port: 3000, env: this.config.env });
   }
 
   getWebServer() {
