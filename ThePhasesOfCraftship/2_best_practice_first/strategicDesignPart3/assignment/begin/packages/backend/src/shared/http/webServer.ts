@@ -2,15 +2,10 @@ import express from "express";
 import cors from "cors";
 import { Server } from "http";
 import { ProcessService } from "@dddforum/backend/src/shared/processes/processService";
-import { UserController } from "@dddforum/backend/src/modules/users";
 
 interface WebServerConfig {
   port: number;
   env: string;
-}
-
-interface Controllers {
-  usersController: UserController;
 }
 
 export class WebServer {

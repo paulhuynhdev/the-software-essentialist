@@ -4,8 +4,10 @@ import {
   UsernameAlreadyExistException,
 } from "../../shared/exceptions";
 import { CreateUserCommand } from "./userCommand";
+import { TransactionalEmailAPI } from "../notifications/transactionalEmailAPI";
+
 export class UserService {
-  constructor(private db: Database) {}
+  constructor(private db: Database, private emailAPI: TransactionalEmailAPI) { }
 
   async createUser(userDTO: CreateUserCommand) {
     const existingUserByEmail = await this.db.users.findUserByEmail(userDTO.email);
@@ -18,8 +20,16 @@ export class UserService {
       throw new UsernameAlreadyExistException();
     }
 
-    const result = await this.db.users.save(userDTO);
+    const { user } = await this.db.users.save(userDTO);
 
-    return result;
+    await this.emailAPI.sendMail({
+      to: user.email,
+      subject: "Your login details to DDDForum",
+      text: `Welcome to DDDForum. You can login with the following details </br>
+      email: ${user.email}
+      password: ${user.password}`,
+    });
+
+    return user;
   }
 }

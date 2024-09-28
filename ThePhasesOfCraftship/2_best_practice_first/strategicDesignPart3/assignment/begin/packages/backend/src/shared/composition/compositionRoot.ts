@@ -3,11 +3,13 @@ import { Database } from "../database";
 import { WebServer } from "../http/webServer";
 import { MarketingModule } from "../../modules/marketings";
 import { UserModule } from "../../modules/users";
+import { NotificationModule } from "../../modules/notifications";
 
 export class CompositionRoot {
   private webServer: WebServer;
   private dbConnection: Database;
   private config: Config;
+  private notificationModule: NotificationModule
   private marketingModule: MarketingModule;
   private userModule: UserModule;
   private static instance: CompositionRoot | null = null;
@@ -22,6 +24,7 @@ export class CompositionRoot {
   private constructor(config: Config) {
     this.config = config;
     this.dbConnection = this.createDBConnection();
+    this.notificationModule = this.createNotificationModule();
     this.marketingModule = this.createMarketingModule();
     this.userModule = this.createUserModule();
     this.webServer = this.createWebServer();
@@ -32,12 +35,17 @@ export class CompositionRoot {
     this.marketingModule.mountRouter(this.webServer)
     this.userModule.mountRouter(this.webServer)
   }
+
+  createNotificationModule(): NotificationModule {
+    return NotificationModule.build();
+  }
+
   createMarketingModule(): MarketingModule {
     return MarketingModule.build();
   }
 
   createUserModule(): any {
-    return UserModule.build(this.dbConnection);
+    return UserModule.build(this.dbConnection, this.notificationModule.getTransactionalEmailAPI());
   }
 
   private createDBConnection() {
