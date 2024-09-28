@@ -1,12 +1,11 @@
-import { ErrorExceptionHandler } from "../errors";
+import { ErrorHandler } from "../errors";
 import { Config } from "../config";
 
 import { CompositionRoot } from "../composition/compositionRoot";
 
-const errorHandler = new ErrorExceptionHandler();
 
 const config = new Config("start");
-const composition = CompositionRoot.createCompositionRoot(config.env, errorHandler);
+const composition = CompositionRoot.createCompositionRoot(config);
 const webServer = composition.getWebServer();
 const dbConnection = composition.getDBConnection();
 
