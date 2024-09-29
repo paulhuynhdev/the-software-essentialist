@@ -2,6 +2,7 @@ import { Database } from "../../shared/database";
 import {
   UserEmailAlreadyExistException,
   UsernameAlreadyExistException,
+  UserNotFoundException,
 } from "../../shared/exceptions";
 import { CreateUserCommand } from "./userCommand";
 import { TransactionalEmailAPI } from "../notifications/transactionalEmailAPI";
@@ -30,6 +31,14 @@ export class UserService {
       password: ${user.password}`,
     });
 
+    return user;
+  }
+
+  async getUserByEmail(email: string) {
+    const user = await this.db.users.findUserByEmail(email);
+    if (!user) {
+      throw new UserNotFoundException(email);
+    }
     return user;
   }
 }

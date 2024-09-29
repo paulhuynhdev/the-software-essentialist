@@ -31,8 +31,9 @@ class UsernameAlreadyExistException extends HttpException {
 }
 
 class UserNotFoundException extends HttpException {
-  constructor() {
-    super(ErrorExceptionType.UserNotFound, "User not found");
+  constructor(email: string) {
+    const message = `User with email ${email} not found`;
+    super(ErrorExceptionType.UserNotFound, message);
   }
 }
 

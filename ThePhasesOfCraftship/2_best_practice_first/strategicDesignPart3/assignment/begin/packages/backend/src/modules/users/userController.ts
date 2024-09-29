@@ -4,6 +4,7 @@ import { UserService } from "./userService";
 import express from "express";
 import { ErrorHandler } from "../../shared/errors";
 import { parseUserForResponse } from "../../shared/utils/parseUserForResponse";
+import { GetUserByEmailResponse } from "@dddforum/shared/src/api/users";
 
 export class UserController {
   private router: express.Router;
@@ -24,6 +25,7 @@ export class UserController {
 
   setupRoutes() {
     this.router.post("/new", this.createUser.bind(this));
+    this.router.get("/:email", this.getUserByEmail.bind(this));
   }
 
   private async createUser(req: Request, res: Response, next: NextFunction) {
@@ -35,6 +37,25 @@ export class UserController {
         data: parseUserForResponse(data),
         success: true,
       });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  private async getUserByEmail(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const email = req.params.email;
+      const user = await this.userService.getUserByEmail(email);
+      const response: GetUserByEmailResponse = {
+        success: true,
+        data: user,
+        error: {},
+      };
+      return res.status(200).json(response);
     } catch (error) {
       next(error);
     }
