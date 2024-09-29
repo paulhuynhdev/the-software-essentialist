@@ -5,19 +5,34 @@ import { CreateUserParams } from "@dddforum/shared/src/api/users";
 
 import * as path from 'path';
 import { DatabaseFixture } from '@dddforum/shared/tests/support/fixtures/databaseFixture';
+import { CreateUserBuilder } from '@dddforum/shared/tests/support/builders/createUserBuilder';
+import { afterEach } from 'node:test';
+import { App, Pages, createAppObject } from '../support/pages';
+import { PuppeteerPageDriver } from '../support/driver';
 
 const feature = loadFeature(path.join(sharedTestRoot, 'features/registration.feature'), { tagFilter: '@frontend' });
 
 
 defineFeature(feature, (test) => {
+  let app: App
+  let pages: Pages
+  let puppeteerPageDriver: PuppeteerPageDriver
+  let userInput: CreateUserParams
   let databaseFixture: DatabaseFixture
 
 
   beforeAll(async () => {
     databaseFixture = new DatabaseFixture();
+    puppeteerPageDriver = await PuppeteerPageDriver.create({
+      headless: false,
+      slowMo: 500
+    })
+    app = createAppObject(puppeteerPageDriver)
+    pages = app.pages
   });
 
   afterAll(async () => {
+    await puppeteerPageDriver.browser.close();
   });
 
   afterEach(async () => {
@@ -30,12 +45,22 @@ defineFeature(feature, (test) => {
   test('Successful registration with marketing emails accepted', ({ given, when, then, and }) => {
 
     given('I am a new user', async () => {
+      userInput = new CreateUserBuilder()
+        .withAllRandomDetails()
+        .build();
+
+      await pages.registration.open();
+      await pages.registration.acceptMarketingEmails();
     });
 
     when('I register with valid account details accepting marketing emails', async () => {
+      await pages.registration.enterAccountDetails(userInput);
+      await pages.registration.acceptMarketingEmails();
+      await pages.registration.submitRegistrationForm();
     });
 
     then('I should be granted access to my account', async () => {
+      expect(await app.header.getUsernameFromHeader()).toContain(userInput.username);
     });
 
     and('I should expect to receive marketing emails', () => {
@@ -63,10 +88,10 @@ defineFeature(feature, (test) => {
     given('a set of users already created accounts', async (table: CreateUserParams[]) => {
     });
 
-  
+
     when('new users attempt to register with those emails', async () => {
     });
-  
+
     then('they should see an error notifying them that the account already exists', async () => {
     });
 
