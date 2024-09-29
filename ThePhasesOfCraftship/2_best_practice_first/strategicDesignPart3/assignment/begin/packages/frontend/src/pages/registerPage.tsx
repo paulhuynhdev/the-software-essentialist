@@ -5,11 +5,11 @@ import {
   RegistrationInput,
 } from "../components/registrationForm";
 import { ToastContainer, toast } from 'react-toastify';
-import { api } from "../api";
 import { useUser } from "../contexts/userContext";
 import { useNavigate } from "react-router-dom";
 import { useSpinner } from "../contexts/spinnerContext";
 import { OverlaySpinner } from "../components/overlaySpinner";
+import { api } from "../api";
 
 
 type ValidationResult = {
@@ -17,7 +17,7 @@ type ValidationResult = {
   errorMessage?: string;
 }
 
-function validateForm (input: RegistrationInput): ValidationResult {
+function validateForm(input: RegistrationInput): ValidationResult {
   if (input.email.indexOf('@') === -1) return { success: false, errorMessage: "Email invalid" };
   if (input.username.length < 2) return { success: false, errorMessage: "Username invalid" };
   return { success: true }
@@ -43,10 +43,11 @@ export const RegisterPage = () => {
     spinner.activate();
     try {
       // Make API call
-      const response = await api.register(input);
+      // const response = await api.register(input);
+      const response = await api.users.register(input);
       // Save the user details to the cache
-      setUser(response.data.data);
-      console.log('setting data', response.data.data)
+      setUser(response.data);
+      console.log('setting data', response.data)
       // Stop the loading spinner
       spinner.deactivate();
       // Show the toast
@@ -65,13 +66,13 @@ export const RegisterPage = () => {
 
   return (
     <Layout>
-      <ToastContainer/>
+      <ToastContainer />
       <RegistrationForm
         onSubmit={(input: RegistrationInput) =>
           handleSubmitRegistrationForm(input)
         }
       />
-      <OverlaySpinner isActive={spinner.spinner?.isActive}/>
+      <OverlaySpinner isActive={spinner.spinner?.isActive} />
     </Layout>
   );
 };

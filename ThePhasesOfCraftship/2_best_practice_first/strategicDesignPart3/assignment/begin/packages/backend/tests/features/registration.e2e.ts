@@ -4,9 +4,15 @@ import { defineFeature, loadFeature } from "jest-cucumber";
 import { app } from "@dddforum/backend/src/shared/bootstrap";
 import { sharedTestRoot } from "@dddforum/shared/src/paths";
 import { CreateUserBuilder } from "@dddforum/shared/tests/support/builders/createUserBuilder";
-import { CreateUserParams } from "@dddforum/shared/src/api/users";
+import { CreateUserParams, CreateUserResponse } from "@dddforum/shared/src/api/users";
 import { DatabaseFixture } from "@dddforum/shared/tests/support/fixtures/databaseFixture";
 import { ErrorExceptionType } from "../../src/shared/constants";
+import { createAPIClient } from "@dddforum/shared/src/api";
+import { AddEmailToListResponse } from "@dddforum/shared/src/api/marketing";
+import { CompositionRoot } from "@dddforum/backend/src/shared/composition/compositionRoot";
+import { WebServer } from "@dddforum/backend/src/shared/http/webServer";
+import { Config } from "@dddforum/backend/src/shared/config";
+import { Database } from "@dddforum/backend/src/shared/database";
 
 const feature = loadFeature(path.join(sharedTestRoot, "features/registration.feature"), {
   tagFilter: "@backend and not @excluded",
@@ -14,13 +20,71 @@ const feature = loadFeature(path.join(sharedTestRoot, "features/registration.fea
 
 defineFeature(feature, (test) => {
   let databaseFixture: DatabaseFixture;
+  const apiClient = createAPIClient('http://localhost:3000');
+  let composition: CompositionRoot;
+  let server: WebServer;
+  const config: Config = new Config("test:e2e");
+  let createUserResponses: CreateUserResponse[] = [];
+  let dbConnection: Database;
 
-  beforeAll(() => {
+  beforeAll(async () => {
+    composition = CompositionRoot.createCompositionRoot(config);
+    server = composition.getWebServer();
     databaseFixture = new DatabaseFixture();
+    dbConnection = composition.getDBConnection();
+
+    await server.start();
+    await dbConnection.connect();
   });
 
   afterEach(async () => {
     await databaseFixture.resetDatabase();
+    createUserResponses = []
+  });
+
+  afterAll(async () => {
+    await server.stop();
+  });
+
+  test("Successful registration with marketing emails accepted", ({ given, when, then, and }) => {
+    let user: CreateUserParams;
+    let response: CreateUserResponse;
+    let addEmailToListResponse: AddEmailToListResponse;
+
+    given('I am a new user', async () => {
+      user = new CreateUserBuilder()
+        .withAllRandomDetails()
+        .build();
+    });
+
+    when('I register with valid account details accepting marketing emails', async () => {
+      response = await apiClient.users.register(user);
+      addEmailToListResponse = await apiClient.marketing.addEmailToList(user.email);
+    });
+    then('I should be granted access to my account', async () => {
+      const { data, success, error } = response;
+
+      // Expect a successful response (Result Verification)
+      expect(success).toBeTruthy();
+      expect(error).toBeUndefined();
+      expect(data!.id).toBeDefined();
+      expect(data!.email).toEqual(user.email);
+      expect(data!.firstName).toEqual(user.firstName);
+      expect(data!.lastName).toEqual(user.lastName);
+      expect(data!.username).toEqual(user.username);
+
+      // And the user exists (State Verification)
+      const getUserResponse = await apiClient.users.getUserByEmail(user.email);
+      const { data: getUserData } = getUserResponse;
+      console.log(getUserData)
+
+      expect(user.email).toEqual(getUserData!.email);
+    });
+
+    and('I should expect to receive marketing emails', () => {
+      const { success } = addEmailToListResponse;
+      expect(success).toBeTruthy();
+    });
   });
 
   test("Successful registration", ({ given, when, then }) => {
@@ -38,11 +102,11 @@ defineFeature(feature, (test) => {
       expect(response.status).toBe(201);
       expect(response.body.success).toBe(true);
       expect(response.body.data).toBeDefined();
-      expect(response.body.data.user.email).toBe(user.email);
-      expect(response.body.data.user.username).toBe(user.username);
-      expect(response.body.data.user.firstName).toBe(user.firstName);
-      expect(response.body.data.user.lastName).toBe(user.lastName);
-      expect(response.body.data.user.id).toBeDefined();
+      expect(response.body.data.email).toBe(user.email);
+      expect(response.body.data.username).toBe(user.username);
+      expect(response.body.data.firstName).toBe(user.firstName);
+      expect(response.body.data.lastName).toBe(user.lastName);
+      expect(response.body.data.id).toBeDefined();
     });
   });
 
