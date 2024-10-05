@@ -32,7 +32,7 @@ defineFeature(feature, (test) => {
   });
 
   afterAll(async () => {
-    await puppeteerPageDriver.browser.close();
+    await puppeteerPageDriver.close();
   });
 
   afterEach(async () => {
