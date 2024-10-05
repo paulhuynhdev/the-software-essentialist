@@ -1,17 +1,27 @@
 {
   "compilerOptions": {
     "baseUrl": "./",
-    "target": "es5",
+    "target": "ES6",
     "module": "commonjs",
-    "lib": ["es6"],
+    "lib": [
+      "es6"
+    ],
     "strict": true,
     "esModuleInterop": true,
-    "types": ["node"],
+    "types": [
+      "node"
+    ],
     "resolveJsonModule": true,
     "paths": {
-      "@dddforum/backend/*": ["./packages/backend/*"],
-      "@dddforum/frontend/*": ["./packages/frontend/*"],
-      "@dddforum/shared/*": ["./packages/shared/*"]
+      "@dddforum/backend/*": [
+        "./packages/backend/*"
+      ],
+      "@dddforum/frontend/*": [
+        "./packages/frontend/*"
+      ],
+      "@dddforum/shared/*": [
+        "./packages/shared/*"
+      ]
     }
   }
 }
