@@ -25,4 +25,19 @@ describe("boolean calculator", () => {
       expect(booleanCalculator.evaluate("NOT FALSE")).toBe(true);
     });
   });
+
+  describe("AND operator", () => {
+    it("should return true for TRUE AND TRUE", () => {
+      expect(booleanCalculator.evaluate("TRUE AND TRUE")).toBe(true);
+    });
+    it("should return false for TRUE AND FALSE", () => {
+      expect(booleanCalculator.evaluate("TRUE AND FALSE")).toBe(false);
+    });
+    it("should return false for FALSE AND TRUE", () => {
+      expect(booleanCalculator.evaluate("FALSE AND TRUE")).toBe(false);
+    });
+    it("should return false for FALSE AND FALSE", () => {
+      expect(booleanCalculator.evaluate("FALSE AND FALSE")).toBe(false);
+    });
+  });
 });
