@@ -12,4 +12,15 @@ describe("boolean calculator", () => {
       expect(booleanCalculator.evaluate("FALSE")).toBe(false);
     });
   });
+
+  describe("NOT operator", () => {
+    it("should return true for NOT TRUE", () => {
+      const booleanCalculator = new BooleanCalculator();
+      expect(booleanCalculator.evaluate("NOT TRUE")).toBe(false);
+    });
+    it("should return false for NOT FALSE", () => {
+      const booleanCalculator = new BooleanCalculator();
+      expect(booleanCalculator.evaluate("NOT FALSE")).toBe(true);
+    });
+  });
 });
