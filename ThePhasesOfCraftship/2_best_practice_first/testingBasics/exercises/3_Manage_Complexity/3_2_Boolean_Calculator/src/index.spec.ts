@@ -9,71 +9,61 @@ describe("boolean calculator", () => {
   });
 
   describe("single values", () => {
-    it('should return true for "TRUE"', () => {
-      expect(booleanCalculator.evaluate("TRUE")).toBe(true);
-    });
-    it('should return false for "FALSE"', () => {
-      expect(booleanCalculator.evaluate("FALSE")).toBe(false);
+    it.each([
+      ["TRUE", true],
+      ["FALSE", false],
+    ])("should evaluate %s to %s", (input, expected) => {
+      expect(booleanCalculator.evaluate(input)).toBe(expected);
     });
   });
 
   describe("NOT operator", () => {
-    it("should return true for NOT TRUE", () => {
-      expect(booleanCalculator.evaluate("NOT TRUE")).toBe(false);
-    });
-    it("should return false for NOT FALSE", () => {
-      expect(booleanCalculator.evaluate("NOT FALSE")).toBe(true);
+    it.each([
+      ["NOT TRUE", false],
+      ["NOT FALSE", true],
+    ])("should evaluate %s to %s", (input, expected) => {
+      expect(booleanCalculator.evaluate(input)).toBe(expected);
     });
   });
 
   describe("AND operator", () => {
-    it("should return true for TRUE AND TRUE", () => {
-      expect(booleanCalculator.evaluate("TRUE AND TRUE")).toBe(true);
-    });
-    it("should return false for TRUE AND FALSE", () => {
-      expect(booleanCalculator.evaluate("TRUE AND FALSE")).toBe(false);
-    });
-    it("should return false for FALSE AND TRUE", () => {
-      expect(booleanCalculator.evaluate("FALSE AND TRUE")).toBe(false);
-    });
-    it("should return false for FALSE AND FALSE", () => {
-      expect(booleanCalculator.evaluate("FALSE AND FALSE")).toBe(false);
+    it.each([
+      ["TRUE AND TRUE", true],
+      ["TRUE AND FALSE", false],
+      ["FALSE AND TRUE", false],
+      ["FALSE AND FALSE", false],
+    ])("should evaluate %s to %s", (input, expected) => {
+      expect(booleanCalculator.evaluate(input)).toBe(expected);
     });
   });
 
   describe("OR operator", () => {
-    it("should return true for TRUE OR FALSE", () => {
-      expect(booleanCalculator.evaluate("TRUE OR FALSE")).toBe(true);
-    });
-    it("should return false for FALSE OR FALSE", () => {
-      expect(booleanCalculator.evaluate("FALSE OR FALSE")).toBe(false);
-    });
-    it("should return true for TRUE OR TRUE", () => {
-      expect(booleanCalculator.evaluate("TRUE OR TRUE")).toBe(true);
+    it.each([
+      ["TRUE OR FALSE", true],
+      ["FALSE OR FALSE", false],
+      ["TRUE OR TRUE", true],
+    ])("should evaluate %s to %s", (input, expected) => {
+      expect(booleanCalculator.evaluate(input)).toBe(expected);
     });
   });
 
   describe("precedence NOT -> AND -> OR", () => {
-    it("should return true for TRUE OR TRUE OR TRUE AND FALSE", () => {
-      expect(booleanCalculator.evaluate("TRUE OR TRUE OR TRUE AND FALSE")).toBe(true);
-    });
-    it("should return true for TRUE OR FALSE AND NOT FALSE", () => {
-      expect(booleanCalculator.evaluate("TRUE OR FALSE AND NOT FALSE")).toBe(true);
-    });
-    it("should return false for NOT TRUE AND TRUE OR FALSE", () => {
-      expect(booleanCalculator.evaluate("NOT TRUE AND TRUE OR FALSE")).toBe(false);
-    });
-    it("should return true for TRUE OR FALSE OR FALSE OR FALSE", () => {
-      expect(booleanCalculator.evaluate("TRUE OR FALSE OR FALSE OR FALSE")).toBe(true);
+    it.each([
+      ["TRUE OR TRUE OR TRUE AND FALSE", true],
+      ["TRUE OR FALSE AND NOT FALSE", true],
+      ["NOT TRUE AND TRUE OR FALSE", false],
+      ["TRUE OR FALSE OR FALSE OR FALSE", true],
+    ])("should evaluate %s to %s", (input, expected) => {
+      expect(booleanCalculator.evaluate(input)).toBe(expected);
     });
   });
 
   describe("parentheses", () => {
-    it("should return false for (TRUE OR TRUE OR TRUE) AND FALSE", () => {
-      expect(booleanCalculator.evaluate("(TRUE OR TRUE OR TRUE) AND FALSE")).toBe(false);
-    });
-    it("NOT (TRUE AND TRUE)", () => {
-      expect(booleanCalculator.evaluate("NOT (TRUE AND TRUE)")).toBe(false);
+    it.each([
+      ["(TRUE OR TRUE OR TRUE) AND FALSE", false],
+      ["NOT (TRUE AND TRUE)", false],
+    ])("should evaluate %s to %s", (input, expected) => {
+      expect(booleanCalculator.evaluate(input)).toBe(expected);
     });
   });
 });
