@@ -6,6 +6,7 @@ class BooleanCalculator {
   };
 
   private readonly PATTERNS = {
+    PAREN: /\((TRUE|FALSE|[^()]+)\)/,
     NOT: /NOT (TRUE|FALSE)/,
     AND: /(TRUE|FALSE) AND (TRUE|FALSE)/,
     OR: /(TRUE|FALSE) OR (TRUE|FALSE)/,
@@ -13,11 +14,27 @@ class BooleanCalculator {
 
   constructor() {}
 
+  private evaluateParentheses(expression: string): string {
+    let result = expression;
+    while (result.includes("(")) {
+      const match = result.match(this.PATTERNS.PAREN);
+      if (!match) break;
+
+      const innerExpression = match[1];
+      const evaluated = this.evaluate(innerExpression);
+      result = result.replace(match[0], evaluated ? "TRUE" : "FALSE");
+    }
+    return result;
+  }
+
   evaluate(expression: string): boolean {
     let evaluatedExpression = expression;
+
+    evaluatedExpression = this.evaluateParentheses(evaluatedExpression);
     evaluatedExpression = this.evaluateOperator(evaluatedExpression, "NOT");
     evaluatedExpression = this.evaluateOperator(evaluatedExpression, "AND");
     evaluatedExpression = this.evaluateOperator(evaluatedExpression, "OR");
+
     return this.evaluateSingleValue(evaluatedExpression);
   }
 

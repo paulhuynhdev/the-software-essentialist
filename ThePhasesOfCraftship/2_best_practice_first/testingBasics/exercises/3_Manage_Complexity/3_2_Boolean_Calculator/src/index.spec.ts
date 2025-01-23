@@ -67,4 +67,13 @@ describe("boolean calculator", () => {
       expect(booleanCalculator.evaluate("TRUE OR FALSE OR FALSE OR FALSE")).toBe(true);
     });
   });
+
+  describe("parentheses", () => {
+    it("should return false for (TRUE OR TRUE OR TRUE) AND FALSE", () => {
+      expect(booleanCalculator.evaluate("(TRUE OR TRUE OR TRUE) AND FALSE")).toBe(false);
+    });
+    it("NOT (TRUE AND TRUE)", () => {
+      expect(booleanCalculator.evaluate("NOT (TRUE AND TRUE)")).toBe(false);
+    });
+  });
 });
