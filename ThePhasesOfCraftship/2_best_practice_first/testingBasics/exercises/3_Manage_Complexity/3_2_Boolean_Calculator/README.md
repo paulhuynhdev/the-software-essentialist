@@ -1,7 +1,5 @@
 # Boolean Calculator (#booleanCalculator)
 
-> Note: This one is hard.
-
 > Create a boolean calculator that takes a boolean expression (as a string) and evaluates it to compute the correct output boolean result 
 
 Here are more details about what it should be able to do:
