@@ -66,4 +66,21 @@ describe("boolean calculator", () => {
       expect(booleanCalculator.evaluate(input)).toBe(expected);
     });
   });
+
+   describe("invalid expressions", () => {
+     it.each([
+       ["(TRUE", "Unmatched parentheses"],
+       ["TRUE)", "Unmatched parentheses"],
+       ["((TRUE)", "Unmatched parentheses"],
+       ["(TRUE))", "Unmatched parentheses"],
+       ["TRUE AND", "Invalid expression"],
+       ["AND TRUE", "Invalid expression"],
+       ["TRUE OR", "Invalid expression"],
+       ["NOT", "Invalid expression"],
+       ["TRUEE", "Invalid expression"],
+       ["", "Empty expression"],
+     ])("should throw error for %s with message %s", (input, errorMessage) => {
+       expect(() => booleanCalculator.evaluate(input)).toThrow(errorMessage);
+     });
+   });
 });
