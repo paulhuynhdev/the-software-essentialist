@@ -52,4 +52,19 @@ describe("boolean calculator", () => {
       expect(booleanCalculator.evaluate("TRUE OR TRUE")).toBe(true);
     });
   });
+
+  describe("precedence NOT -> AND -> OR", () => {
+    it("should return true for TRUE OR TRUE OR TRUE AND FALSE", () => {
+      expect(booleanCalculator.evaluate("TRUE OR TRUE OR TRUE AND FALSE")).toBe(true);
+    });
+    it("should return true for TRUE OR FALSE AND NOT FALSE", () => {
+      expect(booleanCalculator.evaluate("TRUE OR FALSE AND NOT FALSE")).toBe(true);
+    });
+    it("should return false for NOT TRUE AND TRUE OR FALSE", () => {
+      expect(booleanCalculator.evaluate("NOT TRUE AND TRUE OR FALSE")).toBe(false);
+    });
+    it("should return true for TRUE OR FALSE OR FALSE OR FALSE", () => {
+      expect(booleanCalculator.evaluate("TRUE OR FALSE OR FALSE OR FALSE")).toBe(true);
+    });
+  });
 });
