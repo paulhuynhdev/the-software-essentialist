@@ -40,4 +40,16 @@ describe("boolean calculator", () => {
       expect(booleanCalculator.evaluate("FALSE AND FALSE")).toBe(false);
     });
   });
+
+  describe("OR operator", () => {
+    it("should return true for TRUE OR FALSE", () => {
+      expect(booleanCalculator.evaluate("TRUE OR FALSE")).toBe(true);
+    });
+    it("should return false for FALSE OR FALSE", () => {
+      expect(booleanCalculator.evaluate("FALSE OR FALSE")).toBe(false);
+    });
+    it("should return true for TRUE OR TRUE", () => {
+      expect(booleanCalculator.evaluate("TRUE OR TRUE")).toBe(true);
+    });
+  });
 });
