@@ -15,6 +15,16 @@ export interface PostsPersistence {
   findPosts(sort: string): Promise<Post[]>;
 }
 
+
+// TODO: correct imports
+// import { UserRepo } from "../../modules/users/userRepo";
+// import { PostRepo } from "../../modules/posts/postRepo";
+
+// export interface Database {
+//   users: UserRepo;
+//   posts: PostRepo;
+// }
+
 export class Database {
   public users: UsersPersistence;
   public posts: PostsPersistence;

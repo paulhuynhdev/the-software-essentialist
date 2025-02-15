@@ -13,7 +13,7 @@
     "start:dev:no-watch": "npm run migrate && npm run generate && ts-node prepareEnv.ts ts-node src/index.ts",
     "lint": "eslint . --ext .ts --fix",
     "test": "jest",
-    "test:dev": "jest --watchAll",
+    "test:dev": "cross-env dotenv -e .env.development -- jest --watch",
     "test:e2e": "jest -c jest.config.e2e.ts",
     "test:e2e:dev": "jest -c jest.config.e2e.ts --watch"
   },
@@ -36,13 +36,13 @@
     "dotenv": "^16.3.1",
     "dotenv-cli": "^7.3.0",
     "nodemon": "^2.0.19",
+    "prisma": "^6.3.1",
     "supertest": "^7.0.0"
   },
   "dependencies": {
     "@dddforum/shared": "file:../shared",
-    "@prisma/client": "^4.16.0",
+    "@prisma/client": "^6.3.1",
     "cors": "^2.8.5",
-    "express": "^4.18.2",
-    "prisma": "^4.16.0"
+    "express": "^4.18.2"
   }
 }

@@ -10,7 +10,20 @@ export class CreateUserBuilder {
       lastName: "",
       email: "",
       username: "",
+      password: "",
     };
+  }
+
+  public makeValidatedUserBuilder(): CreateUserBuilder {
+    this.props = {
+      firstName: "ValidFirstName",
+      lastName: "ValidLastName",
+      email: "valid.email@example.com",
+      username: "valid_username",
+      password: "password",
+    };
+
+    return this;
   }
 
   public withAllRandomDetails() {
