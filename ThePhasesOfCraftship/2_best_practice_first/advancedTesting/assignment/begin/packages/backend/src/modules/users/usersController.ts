@@ -47,6 +47,7 @@ export class UsersController {
       };
       return res.status(201).json(response);
     } catch (error) {
+      console.log(error);
       next(error);
     }
   }

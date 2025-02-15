@@ -6,7 +6,8 @@ export class PostsService {
 
   async getPosts(query: GetPostsQuery) {
     const sort = query.sort;
-    const posts = await this.db.posts.findPosts(sort);
-    return posts;
+    // const posts = await this.db.posts.findPosts(sort);
+    // return posts;
+    return [];
   }
 }
