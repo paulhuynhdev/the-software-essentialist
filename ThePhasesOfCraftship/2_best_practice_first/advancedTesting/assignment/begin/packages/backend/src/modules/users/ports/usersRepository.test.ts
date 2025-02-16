@@ -4,9 +4,12 @@ import { ProductionUsersRepository } from "../adapters/productionUsersRepository
 import { PrismaClient } from "@prisma/client";
 import { CreateUserCommandBuilder } from "@dddforum/shared/tests/support/builders/createUserCommandBuilder";
 import { CreateUserBuilder } from "@dddforum/shared/tests/support/builders/createUserBuilder";
+import { InMemoryUsersRepositorySpy } from "../adapters/InMemoryUsersRepositorySpy";
+
 describe("UsersRepository", () => {
   const userRepos: UsersRepository[] = [
     new ProductionUsersRepository(new PrismaClient()),
+    new InMemoryUsersRepositorySpy(),
   ];
 
   it("can save and retrieve a user by email", async () => {
