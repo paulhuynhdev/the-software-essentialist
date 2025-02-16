@@ -13,6 +13,10 @@ export class PostsModule {
     this.postsController = this.createPostsController();
   }
 
+  getPostsService() {
+    return this.postsService;
+  }
+
   static build(dbConnection: Database) {
     return new PostsModule(dbConnection);
   }

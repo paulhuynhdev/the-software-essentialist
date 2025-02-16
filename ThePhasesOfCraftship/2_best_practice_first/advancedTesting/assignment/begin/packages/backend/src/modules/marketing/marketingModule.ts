@@ -15,6 +15,10 @@ export class MarketingModule {
     this.marketingController = this.createMarketingController();
   }
 
+  getMarketingService() {
+    return this.marketingService;
+  }
+
   static build() {
     return new MarketingModule();
   }

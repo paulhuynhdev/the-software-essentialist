@@ -2,16 +2,16 @@ import { UsersController } from "./usersController";
 import { TransactionalEmailAPI } from "../notifications/transactionalEmailAPI";
 import { WebServer } from "../../shared/http/webServer";
 import { UsersService } from "./usersService";
-import { userErrorHandler } from "./usersErrors";
 import { UsersRepository } from "./ports/usersRepository";
 import { Config } from "../../shared/config";
 import { InMemoryUserRepository } from "./adapters/inMemoryUsersRepository";
 import { ProductionUsersRepository } from "./adapters/productionUsersRepository";
 import { Database } from "../../shared/database";
+import { Application } from "../../shared/http/interfaces";
 
 export class UsersModule {
   private usersService: UsersService;
-  private usersController: UsersController;
+  // private usersController: UsersController;
   private usersRepository: UsersRepository;
 
   private constructor(
@@ -21,7 +21,7 @@ export class UsersModule {
   ) {
     this.usersRepository = this.createUserRepository();
     this.usersService = this.createUsersService();
-    this.usersController = this.createUsersController();
+    // this.usersController = this.createUsersController();
     this.config = config;
   }
 
@@ -30,6 +30,10 @@ export class UsersModule {
       this.config.getScript() === "test:unit" ||
       this.config.getEnvironment() === "development"
     );
+  }
+
+  getUsersService() {
+    return this.usersService;
   }
 
   private createUserRepository() {
@@ -54,15 +58,17 @@ export class UsersModule {
     return new UsersService(this.usersRepository, this.emailAPI);
   }
 
-  private createUsersController() {
-    return new UsersController(this.usersService, userErrorHandler);
+  private createUsersController(application: Application) {
+    return new UsersController(application);
   }
 
-  public getController() {
-    return this.usersController;
-  }
+  // public getController() {
+  //   return this.usersController;
+  // }
 
   public mountRouter(webServer: WebServer) {
-    webServer.mountRouter("/users", this.usersController.getRouter());
+    const application = webServer.getApplication();
+    const usersController = this.createUsersController(application);
+    webServer.mountRouter("/users", usersController.getRouter());
   }
 }

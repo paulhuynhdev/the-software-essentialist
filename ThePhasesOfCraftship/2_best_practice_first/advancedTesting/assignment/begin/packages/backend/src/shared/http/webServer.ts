@@ -3,10 +3,12 @@ import cors from "cors";
 import { Server } from "http";
 
 import { ProcessService } from "@dddforum/backend/src/shared/processes/processService";
+import { Application } from "./interfaces";
 
 interface WebServerConfig {
   port: number;
   env: string;
+  application: Application;
 }
 
 export class WebServer {
@@ -34,7 +36,7 @@ export class WebServer {
   }
 
   public getApplication() {
-    return this.express;
+    return this.config.application;
   }
 
   async start(): Promise<void> {
