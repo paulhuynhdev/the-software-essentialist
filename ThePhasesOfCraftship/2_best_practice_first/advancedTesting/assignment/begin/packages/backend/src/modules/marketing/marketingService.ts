@@ -1,5 +1,5 @@
 import { ServerErrorException } from "../../shared/exceptions";
-import { ContactListAPI } from "./contactListAPI";
+import { ContactListAPI } from "./ports/ContactListAPI";
 
 export class MarketingService {
   constructor(private contactListAPI: ContactListAPI) {}

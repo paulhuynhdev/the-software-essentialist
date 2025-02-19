@@ -6,6 +6,15 @@ export type CreateUserParams = {
   lastName: string;
   email: string;
   username: string;
+  password: string;
+};
+
+export type ValidatedUser = {
+  email: string;
+  firstName: string;
+  lastName: string;
+  username: string;
+  password: string;
 };
 
 export type User = {

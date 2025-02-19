@@ -7,6 +7,7 @@ import {
   NotificationsModule,
   MarketingModule,
 } from "@dddforum/backend/src/modules";
+import { Application } from "../http/interfaces";
 
 export class CompositionRoot {
   private static instance: CompositionRoot | null = null;
@@ -38,22 +39,31 @@ export class CompositionRoot {
     this.mountRoutes();
   }
 
-  createNotificationsModule () {
+  getApplication(): Application {
+    return {
+      user: this.usersModule.getUsersService(),
+      post: this.postsModule.getPostsService(),
+      marketing: this.marketingModule.getMarketingService(),
+    };
+  }
+
+  createNotificationsModule() {
     return NotificationsModule.build();
   }
 
-  createMarketingModule () {
-    return MarketingModule.build();
+  createMarketingModule() {
+    return MarketingModule.build(this.config);
   }
 
-  createUsersModule () {
+  createUsersModule() {
     return UsersModule.build(
       this.dbConnection,
-      this.notificationsModule.getTransactionalEmailAPI(),
+      this.notificationsModule.getTransactionalEmailAPI(this.config),
+      this.config,
     );
   }
 
-  createPostsModule () {
+  createPostsModule() {
     return PostsModule.build(this.dbConnection);
   }
 
@@ -63,7 +73,8 @@ export class CompositionRoot {
   }
 
   createWebServer() {
-    return new WebServer({ port: 3000, env: this.config.env });
+    const application = this.getApplication();
+    return new WebServer({ port: 3000, env: this.config.env, application });
   }
 
   getWebServer() {

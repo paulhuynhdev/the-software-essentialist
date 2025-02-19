@@ -1,22 +1,29 @@
+import { Config } from "../../shared/config";
 import { WebServer } from "../../shared/http/webServer";
-import { ContactListAPI } from "./contactListAPI";
+import { ContactListAPISpy } from "./adapters/ContactListAPISpy";
+import { MailChimpContactList } from "./adapters/MailChimpContactList";
 import { MarketingController } from "./marketingController";
 import { marketingErrorHandler } from "./marketingErrors";
 import { MarketingService } from "./marketingService";
+import { ContactListAPI } from "./ports/ContactListAPI";
 
 export class MarketingModule {
   private marketingService: MarketingService;
   private marketingController: MarketingController;
   private contactListAPI: ContactListAPI;
 
-  private constructor() {
-    this.contactListAPI = this.buildContactListAPI();
+  private constructor(config: Config) {
+    this.contactListAPI = this.buildContactListAPI(config);
     this.marketingService = this.createMarketingService();
     this.marketingController = this.createMarketingController();
   }
 
-  static build() {
-    return new MarketingModule();
+  getMarketingService() {
+    return this.marketingService;
+  }
+
+  static build(config: Config) {
+    return new MarketingModule(config);
   }
 
   private createMarketingService() {
@@ -30,8 +37,11 @@ export class MarketingModule {
     );
   }
 
-  private buildContactListAPI() {
-    return new ContactListAPI();
+  private buildContactListAPI(config: Config) {
+    if (config.getScript() === "test:unit") {
+      return ContactListAPISpy.getInstance();
+    }
+    return new MailChimpContactList();
   }
 
   public getMarketingController() {

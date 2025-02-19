@@ -1,18 +1,21 @@
 import express from "express";
-import { UsersService } from "./usersService";
+// import { UsersService } from "./usersService";
 import { CreateUserCommand } from "./usersCommand";
 import {
   CreateUserResponse,
   GetUserByEmailResponse,
 } from "@dddforum/shared/src/api/users";
-import { ErrorHandler } from "../../shared/errors";
+// import { ErrorHandler } from "../../shared/errors";
+import { Application } from "../../shared/http/interfaces";
+import { userErrorHandler } from "./usersErrors";
 
 export class UsersController {
   private router: express.Router;
 
   constructor(
-    private usersService: UsersService,
-    private errorHandler: ErrorHandler,
+    // private usersService: UsersService,
+    // private errorHandler: ErrorHandler,
+    private application: Application,
   ) {
     this.router = express.Router();
     this.setupRoutes();
@@ -29,7 +32,7 @@ export class UsersController {
   }
 
   private setupErrorHandler() {
-    this.router.use(this.errorHandler);
+    this.router.use(userErrorHandler);
   }
 
   private async createUser(
@@ -39,7 +42,7 @@ export class UsersController {
   ) {
     try {
       const command = CreateUserCommand.fromRequest(req.body);
-      const user = await this.usersService.createUser(command);
+      const user = await this.application.user.createUser(command);
       const response: CreateUserResponse = {
         success: true,
         data: user,
@@ -47,6 +50,7 @@ export class UsersController {
       };
       return res.status(201).json(response);
     } catch (error) {
+      console.log(error);
       next(error);
     }
   }
@@ -58,7 +62,7 @@ export class UsersController {
   ) {
     try {
       const email = req.params.email;
-      const user = await this.usersService.getUserByEmail(email);
+      const user = await this.application.user.getUserByEmail(email);
       const response: GetUserByEmailResponse = {
         success: true,
         data: user,

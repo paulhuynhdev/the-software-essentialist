@@ -6,7 +6,13 @@ export class CreateUserCommand {
   constructor(public props: CreateUserParams) {}
 
   static fromRequest(body: unknown) {
-    const requiredKeys = ["email", "firstName", "lastName", "username"];
+    const requiredKeys = [
+      "email",
+      "firstName",
+      "lastName",
+      "username",
+      "password",
+    ];
     const isRequestInvalid =
       !body || typeof body !== "object" || isMissingKeys(body, requiredKeys);
 
@@ -14,9 +20,16 @@ export class CreateUserCommand {
       throw new InvalidRequestBodyException(requiredKeys);
     }
 
-    const { username, email, firstName, lastName } = body as CreateUserParams;
+    const { username, email, firstName, lastName, password } =
+      body as CreateUserParams;
 
-    return new CreateUserCommand({ email, firstName, lastName, username });
+    return new CreateUserCommand({
+      email,
+      firstName,
+      lastName,
+      username,
+      password,
+    });
   }
 
   get email() {
@@ -33,5 +46,9 @@ export class CreateUserCommand {
 
   get username() {
     return this.props.username;
+  }
+
+  get password() {
+    return this.props.password;
   }
 }

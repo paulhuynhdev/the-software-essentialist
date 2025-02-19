@@ -24,7 +24,7 @@ defineFeature(feature, (test) => {
   const apiClient = createAPIClient("http://localhost:3000");
   let composition: CompositionRoot;
   let server: WebServer;
-  const config: Config = new Config("test:e2e");
+  const config: Config = new Config("test:infra");
   let response: CreateUserResponse;
   let createUserResponses: CreateUserResponse[] = [];
   let addEmailToListResponse: AddEmailToListResponse;
@@ -74,7 +74,6 @@ defineFeature(feature, (test) => {
     then("I should be granted access to my account", async () => {
       const { data, success, error } = response;
 
-      // Expect a successful response (Result Verification)
       expect(success).toBeTruthy();
       expect(error).toEqual({});
       expect(data!.id).toBeDefined();
@@ -128,6 +127,8 @@ defineFeature(feature, (test) => {
       const { success } = addEmailToListResponse;
 
       expect(success).toBeTruthy();
+      // How can we test this? what do we want to place under test?
+      // we'll implement this later
     });
   });
 

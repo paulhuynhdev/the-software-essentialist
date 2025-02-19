@@ -3,7 +3,6 @@ import * as path from "path";
 import { defineFeature, loadFeature } from "jest-cucumber";
 import { sharedTestRoot } from "@dddforum/shared/src/paths";
 import { CreateUserBuilder } from "@dddforum/shared/tests/support/builders/createUserBuilder";
-import { DatabaseFixture } from "@dddforum/shared/tests/support/fixtures/databaseFixture";
 import {
   CreateUserParams,
   CreateUserResponse,
@@ -14,17 +13,22 @@ import { WebServer } from "@dddforum/backend/src/shared/http/webServer";
 import { Config } from "@dddforum/backend/src/shared/config";
 import { Database } from "../../src/shared/database";
 import { AddEmailToListResponse } from "@dddforum/shared/src/api/marketing";
+import { InMemoryUsersRepositorySpy } from "@dddforum/backend/src/modules/users/adapters/InMemoryUsersRepositorySpy";
+import { TransactionalEmailAPISpy } from "@dddforum/backend/src/modules/notifications/transactionalEmailAPISpy";
+import { ContactListAPISpy } from "@dddforum/backend/src/modules/marketing/adapters/ContactListAPISpy";
 
 const feature = loadFeature(
   path.join(sharedTestRoot, "features/registration.feature"),
 );
 
 defineFeature(feature, (test) => {
-  let databaseFixture: DatabaseFixture;
+  let fakeUserRepo: InMemoryUsersRepositorySpy;
+  let transactionalEmailAPISpy: TransactionalEmailAPISpy;
+  let contactListAPISpy: ContactListAPISpy;
   const apiClient = createAPIClient("http://localhost:3000");
   let composition: CompositionRoot;
   let server: WebServer;
-  const config: Config = new Config("test:e2e");
+  const config: Config = new Config("test:unit");
   let response: CreateUserResponse;
   let createUserResponses: CreateUserResponse[] = [];
   let addEmailToListResponse: AddEmailToListResponse;
@@ -33,7 +37,9 @@ defineFeature(feature, (test) => {
   beforeAll(async () => {
     composition = CompositionRoot.createCompositionRoot(config);
     server = composition.getWebServer();
-    databaseFixture = new DatabaseFixture();
+    fakeUserRepo = InMemoryUsersRepositorySpy.getInstance();
+    transactionalEmailAPISpy = TransactionalEmailAPISpy.getInstance();
+    contactListAPISpy = ContactListAPISpy.getInstance();
     dbConnection = composition.getDBConnection();
 
     await server.start();
@@ -41,8 +47,15 @@ defineFeature(feature, (test) => {
   });
 
   afterEach(async () => {
-    await databaseFixture.resetDatabase();
+    await fakeUserRepo.reset();
+    await transactionalEmailAPISpy.reset();
+    await contactListAPISpy.reset();
     createUserResponses = [];
+    addEmailToListResponse = {
+      success: false,
+      data: false,
+      error: { message: "ServerError" },
+    };
   });
 
   afterAll(async () => {
@@ -74,7 +87,6 @@ defineFeature(feature, (test) => {
     then("I should be granted access to my account", async () => {
       const { data, success, error } = response;
 
-      // Expect a successful response (Result Verification)
       expect(success).toBeTruthy();
       expect(error).toEqual({});
       expect(data!.id).toBeDefined();
@@ -92,6 +104,10 @@ defineFeature(feature, (test) => {
       const { success } = addEmailToListResponse;
 
       expect(success).toBeTruthy();
+
+      expect(contactListAPISpy.getTimesMethodCalled("addEmailToList")).toEqual(
+        1,
+      );
     });
   });
 
@@ -114,7 +130,7 @@ defineFeature(feature, (test) => {
       },
     );
 
-    then("I should be granted access to my account", () => {
+    then("I should be granted access to my account", async () => {
       expect(response.success).toBe(true);
       expect(response.data).toBeDefined();
       expect(response.data!.email).toBe(user.email);
@@ -122,12 +138,24 @@ defineFeature(feature, (test) => {
       expect(response.data!.firstName).toBe(user.firstName);
       expect(response.data!.lastName).toBe(user.lastName);
       expect(response.data!.id).toBeDefined();
+
+      const getUserResponse = await apiClient.users.getUserByEmail(user.email);
+      expect(user.email).toEqual(getUserResponse.data!.email);
+
+      expect(fakeUserRepo.getTimesMethodCalled("save")).toEqual(1);
+
+      expect(transactionalEmailAPISpy.getTimesMethodCalled("sendMail")).toEqual(
+        1,
+      );
     });
 
     and("I should not expect to receive marketing emails", () => {
       const { success } = addEmailToListResponse;
+      expect(success).toBeFalsy();
 
-      expect(success).toBeTruthy();
+      expect(contactListAPISpy.getTimesMethodCalled("addEmailToList")).toEqual(
+        0,
+      );
     });
   });
 
@@ -172,12 +200,14 @@ defineFeature(feature, (test) => {
     given("a set of users already created accounts", async (table) => {
       existingUsers = table.map((row: any) => {
         return new CreateUserBuilder()
+          .withAllRandomDetails()
           .withFirstName(row.firstName)
           .withLastName(row.lastName)
           .withEmail(row.email)
           .build();
       });
-      await databaseFixture.setupWithExistingUsers(existingUsers);
+
+      await Promise.all(existingUsers.map((user) => fakeUserRepo.save(user)));
     });
 
     when("new users attempt to register with those emails", async () => {
@@ -187,7 +217,6 @@ defineFeature(feature, (test) => {
         }),
       );
     });
-
     then(
       "they should see an error notifying them that the account already exists",
       () => {
@@ -210,38 +239,37 @@ defineFeature(feature, (test) => {
 
   test("Username already taken", ({ given, when, then, and }) => {
     let existingUsers: CreateUserParams[] = [];
+    let newRegistrationAttempts: CreateUserParams[] = [];
 
     given(
       "a set of users have already created their accounts with valid details",
       async (table) => {
         existingUsers = table.map((row: any) => {
           return new CreateUserBuilder()
+            .withAllRandomDetails()
             .withFirstName(row.firstName)
             .withLastName(row.lastName)
             .withEmail(row.email)
             .withUsername(row.username)
             .build();
         });
-        await databaseFixture.setupWithExistingUsers(existingUsers);
+
+        await Promise.all(existingUsers.map((user) => fakeUserRepo.save(user)));
       },
     );
 
     when(
       "new users attempt to register with already taken usernames",
-      async (table) => {
-        const newUsers: CreateUserParams[] = table.map((row: any) => {
+      async () => {
+        newRegistrationAttempts = existingUsers.map((existingUser) => {
           return new CreateUserBuilder()
-            .withFirstName(row.firstName)
-            .withLastName(row.lastName)
-            .withEmail(row.email)
-            .withUsername(row.username)
+            .withAllRandomDetails()
+            .withUsername(existingUser.username)
             .build();
         });
 
         createUserResponses = await Promise.all(
-          newUsers.map((user) => {
-            return apiClient.users.register(user);
-          }),
+          newRegistrationAttempts.map((user) => apiClient.users.register(user)),
         );
       },
     );
@@ -249,11 +277,11 @@ defineFeature(feature, (test) => {
     then(
       "they see an error notifying them that the username has already been taken",
       () => {
-        for (const response of createUserResponses) {
-          expect(response.error).toBeDefined();
+        createUserResponses.forEach((response) => {
           expect(response.success).toBeFalsy();
+          expect(response.data).toBeNull();
           expect(response.error.code).toEqual("UsernameAlreadyTaken");
-        }
+        });
       },
     );
 
