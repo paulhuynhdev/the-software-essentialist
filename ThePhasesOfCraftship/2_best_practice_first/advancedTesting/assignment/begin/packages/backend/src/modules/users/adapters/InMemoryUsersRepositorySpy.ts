@@ -7,16 +7,28 @@ export class InMemoryUsersRepositorySpy
   implements UsersRepository
 {
   private users: User[] = [];
+  private static instance: InMemoryUsersRepositorySpy;
 
   constructor() {
     super();
     this.users = [];
   }
 
+  public static getInstance(): InMemoryUsersRepositorySpy {
+    if (!InMemoryUsersRepositorySpy.instance) {
+      InMemoryUsersRepositorySpy.instance = new InMemoryUsersRepositorySpy();
+    }
+    return InMemoryUsersRepositorySpy.instance;
+  }
+
   save(user: ValidatedUser): Promise<User & { password: string }> {
     this.addCall("save", [user]);
+    const { email, firstName, lastName, username } = user;
     const newUser = {
-      ...user,
+      email,
+      firstName,
+      lastName,
+      username,
       id: this.users.length > 0 ? this.users[this.users.length - 1].id + 1 : 1,
       password: "",
     };
@@ -41,6 +53,11 @@ export class InMemoryUsersRepositorySpy
   findById(id: number): Promise<User | null> {
     this.addCall("findById", [id]);
     return Promise.resolve(this.users.find((user) => user.id === id) || null);
+  }
+
+  findAll(): Promise<User[]> {
+    this.addCall("findAll", []);
+    return Promise.resolve(this.users);
   }
 
   delete(email: string): Promise<void> {

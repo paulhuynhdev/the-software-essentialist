@@ -4,10 +4,10 @@ import { WebServer } from "../../shared/http/webServer";
 import { UsersService } from "./usersService";
 import { UsersRepository } from "./ports/usersRepository";
 import { Config } from "../../shared/config";
-import { InMemoryUserRepository } from "./adapters/inMemoryUsersRepository";
 import { ProductionUsersRepository } from "./adapters/productionUsersRepository";
 import { Database } from "../../shared/database";
 import { Application } from "../../shared/http/interfaces";
+import { InMemoryUsersRepositorySpy } from "./adapters/InMemoryUsersRepositorySpy";
 
 export class UsersModule {
   private usersService: UsersService;
@@ -40,7 +40,7 @@ export class UsersModule {
     if (this.usersRepository) return this.usersRepository;
 
     if (this.shouldBuildFakeRepository()) {
-      return new InMemoryUserRepository();
+      return InMemoryUsersRepositorySpy.getInstance();
     }
 
     return new ProductionUsersRepository(this.dbConnection.getConnection());

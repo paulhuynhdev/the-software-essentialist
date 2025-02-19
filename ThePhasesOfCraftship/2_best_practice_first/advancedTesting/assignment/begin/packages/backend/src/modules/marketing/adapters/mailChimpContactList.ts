@@ -1,4 +1,4 @@
-import { ContactListAPI } from "../ports/contactListAPI";
+import { ContactListAPI } from "../ports/ContactListAPI";
 
 export class MailChimpContactList implements ContactListAPI {
   async addEmailToList(email: string): Promise<boolean> {

@@ -7,4 +7,5 @@ export interface UsersRepository {
   findById(id: number): Promise<User | null>;
   delete(email: string): Promise<void>;
   update(id: number, props: Partial<ValidatedUser>): Promise<User | null>;
+  findAll(): Promise<User[]>;
 }

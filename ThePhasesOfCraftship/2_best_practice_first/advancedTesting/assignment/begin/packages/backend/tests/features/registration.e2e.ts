@@ -83,19 +83,12 @@ defineFeature(feature, (test) => {
       expect(data!.lastName).toEqual(user.lastName);
       expect(data!.username).toEqual(user.username);
 
-      // And the user exists (State Verification)
       const getUserResponse = await apiClient.users.getUserByEmail(user.email);
       const { data: getUserData } = getUserResponse;
       expect(user.email).toEqual(getUserData!.email);
     });
 
     and("I should expect to receive marketing emails", () => {
-      // How can we test this? what do we want to place under test?
-      // Well, what's the tool they'll use? mailchimp?
-      // And do we want to expect that mailchimp is going to get called to add
-      // a new contact to a list? Yes, we do. But we're not going to worry
-      // about this yet because we need to learn how to validate this without
-      // filling up a production Mailchimp account with test data.
       const { success } = addEmailToListResponse;
 
       expect(success).toBeTruthy();
@@ -135,8 +128,6 @@ defineFeature(feature, (test) => {
       const { success } = addEmailToListResponse;
 
       expect(success).toBeTruthy();
-      // How can we test this? what do we want to place under test?
-      // we'll implement this later
     });
   });
 

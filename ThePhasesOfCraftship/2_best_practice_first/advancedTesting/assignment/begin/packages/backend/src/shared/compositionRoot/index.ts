@@ -52,13 +52,13 @@ export class CompositionRoot {
   }
 
   createMarketingModule() {
-    return MarketingModule.build();
+    return MarketingModule.build(this.config);
   }
 
   createUsersModule() {
     return UsersModule.build(
       this.dbConnection,
-      this.notificationsModule.getTransactionalEmailAPI(),
+      this.notificationsModule.getTransactionalEmailAPI(this.config),
       this.config,
     );
   }

@@ -5,6 +5,10 @@ import { PrismaClient } from "@prisma/client";
 export class ProductionUsersRepository implements UsersRepository {
   constructor(private prisma: PrismaClient) {}
 
+  async findAll(): Promise<User[]> {
+    return await this.prisma.user.findMany();
+  }
+
   async findById(id: number): Promise<User | null> {
     try {
       const maybeUser = await this.prisma.user.findFirst({

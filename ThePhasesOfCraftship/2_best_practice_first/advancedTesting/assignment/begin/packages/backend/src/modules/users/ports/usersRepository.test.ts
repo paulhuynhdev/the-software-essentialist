@@ -50,4 +50,69 @@ describe("UsersRepository", () => {
       }),
     );
   });
+
+  it("should return null when username does not exist", async () => {
+    await Promise.all(
+      userRepos.map(async (userRepo) => {
+        const nonExistentUsername = "nonexistentuser123";
+        const foundUser =
+          await userRepo.findUserByUsername(nonExistentUsername);
+
+        expect(foundUser).toBeNull();
+      }),
+    );
+  });
+
+  it("should return all users when users exist", async () => {
+    await Promise.all(
+      userRepos.map(async (userRepo) => {
+        const user1 = new CreateUserBuilder()
+          .makeValidatedUserBuilder()
+          .withAllRandomDetails()
+          .build();
+        const user2 = new CreateUserBuilder()
+          .makeValidatedUserBuilder()
+          .withAllRandomDetails()
+          .build();
+
+        await userRepo.save(user1);
+        await userRepo.save(user2);
+
+        const allUsers = await userRepo.findAll();
+
+        expect(allUsers.length).toBeGreaterThanOrEqual(2);
+        expect(allUsers.some((u) => u.email === user1.email)).toBeTruthy();
+        expect(allUsers.some((u) => u.email === user2.email)).toBeTruthy();
+      }),
+    );
+  });
+
+  it("should return user when email exists", async () => {
+    await Promise.all(
+      userRepos.map(async (userRepo) => {
+        const testUser = new CreateUserBuilder()
+          .makeValidatedUserBuilder()
+          .withAllRandomDetails()
+          .build();
+
+        await userRepo.save(testUser);
+        const foundUser = await userRepo.findUserByEmail(testUser.email);
+
+        expect(foundUser).toBeDefined();
+        expect(foundUser?.email).toBe(testUser.email);
+        expect(foundUser?.username).toBe(testUser.username);
+      }),
+    );
+  });
+
+  it("should return null when email does not exist", async () => {
+    await Promise.all(
+      userRepos.map(async (userRepo) => {
+        const nonExistentEmail = "nonexistent@example.com";
+        const foundUser = await userRepo.findUserByEmail(nonExistentEmail);
+
+        expect(foundUser).toBeNull();
+      }),
+    );
+  });
 });

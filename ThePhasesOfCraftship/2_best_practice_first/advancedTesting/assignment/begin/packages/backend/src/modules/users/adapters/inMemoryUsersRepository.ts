@@ -3,9 +3,17 @@ import { UsersRepository } from "../ports/usersRepository";
 
 export class InMemoryUserRepository implements UsersRepository {
   private users: User[] = [];
+  private static instance: InMemoryUserRepository;
 
   constructor() {
     this.users = [];
+  }
+
+  public static getInstance(): InMemoryUserRepository {
+    if (!InMemoryUserRepository.instance) {
+      InMemoryUserRepository.instance = new InMemoryUserRepository();
+    }
+    return InMemoryUserRepository.instance;
   }
 
   save(user: ValidatedUser): Promise<User & { password: string }> {
@@ -36,6 +44,10 @@ export class InMemoryUserRepository implements UsersRepository {
 
   findById(id: number): Promise<User | null> {
     return Promise.resolve(this.users.find((user) => user.id === id) || null);
+  }
+
+  findAll(): Promise<User[]> {
+    return Promise.resolve(this.users);
   }
 
   delete(email: string): Promise<void> {

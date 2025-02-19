@@ -54,12 +54,8 @@ describe("users HTTP API", () => {
 
     createUserSpy.mockResolvedValue(createUserResponseStub);
 
-    // Act
-    // Use the client library to make the api call (pass through as much
-    // uncertainty as possible)
     await apiClient.users.register(createUserInput);
 
-    // Communication: Expect it to have called the correct use case
     expect(application.user.createUser).toHaveBeenCalledTimes(1);
   });
 });

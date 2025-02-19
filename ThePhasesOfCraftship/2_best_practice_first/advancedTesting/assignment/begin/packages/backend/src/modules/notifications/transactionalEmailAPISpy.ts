@@ -5,8 +5,18 @@ export class TransactionalEmailAPISpy
   extends Spy<TransactionalEmailAPI>
   implements TransactionalEmailAPI
 {
+  private static instance: TransactionalEmailAPISpy | null = null;
+
   constructor() {
     super();
+  }
+
+  static getInstance() {
+    if (TransactionalEmailAPISpy.instance) {
+      return TransactionalEmailAPISpy.instance;
+    }
+    TransactionalEmailAPISpy.instance = new TransactionalEmailAPISpy();
+    return TransactionalEmailAPISpy.instance;
   }
 
   sendMail(input: {
@@ -17,5 +27,9 @@ export class TransactionalEmailAPISpy
     this.addCall("sendMail", [input]);
 
     return Promise.resolve(true);
+  }
+
+  async reset() {
+    this.calls = [];
   }
 }
