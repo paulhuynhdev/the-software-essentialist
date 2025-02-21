@@ -1,7 +1,6 @@
-import { User, Post, Vote, Comment } from "@prisma/client";
-import { Database } from "@dddforum/backend/src/shared/database";
+import { User, Post, Vote, Comment, PrismaClient } from "@prisma/client";
 
-const prisma = new Database().getConnection();
+const prisma = new PrismaClient();
 
 const initialUsers: User[] = [
   {
@@ -59,7 +58,7 @@ const initialPosts: Post[] = [
     id: 4,
     title: "Links",
     content: "This is a link post",
-    postType: "https://khalilstemmler.com",
+    postType: "<https://khalilstemmler.com>",
     dateCreated: new Date(),
     memberId: 2,
   },
@@ -91,36 +90,76 @@ const initialPostComments: Comment[] = [
 ];
 
 async function seed() {
-  for (const user of initialUsers) {
-    const newUser = await prisma.user.create({
-      data: user,
-    });
+  const totalPostsCount = await prisma.post.count();
+  if (totalPostsCount !== 0) {
+    console.log("Already seeded.");
+    return;
+  }
 
-    await prisma.member.create({
-      data: {
-        user: {
-          connect: { id: newUser.id },
+  try {
+    // Tạo một map để lưu trữ mapping giữa user ID và member ID
+    const userMemberMap = new Map<number, number>();
+
+    // Tạo users và members, lưu mapping
+    for (const user of initialUsers) {
+      const newUser = await prisma.user.create({
+        data: user,
+      });
+
+      const newMember = await prisma.member.create({
+        data: {
+          user: {
+            connect: { id: newUser.id },
+          },
         },
-      },
-    });
-  }
+      });
 
-  for (const post of initialPosts) {
-    await prisma.post.create({
-      data: post,
-    });
-  }
+      userMemberMap.set(user.id, newMember.id);
+    }
 
-  for (const vote of initialPostVotes) {
-    await prisma.vote.create({
-      data: vote,
-    });
-  }
+    // Tạo posts với member ID chính xác
+    for (const post of initialPosts) {
+      const correctMemberId = userMemberMap.get(post.memberId);
+      if (!correctMemberId) {
+        throw new Error(`No member found for user ID: ${post.memberId}`);
+      }
+      await prisma.post.create({
+        data: {
+          ...post,
+          memberId: correctMemberId,
+        },
+      });
+    }
 
-  for (const comment of initialPostComments) {
-    await prisma.comment.create({
-      data: comment,
-    });
+    // Cập nhật votes với member ID chính xác
+    for (const vote of initialPostVotes) {
+      const correctMemberId = userMemberMap.get(vote.memberId);
+      if (!correctMemberId) {
+        throw new Error(`No member found for user ID: ${vote.memberId}`);
+      }
+      await prisma.vote.create({
+        data: {
+          ...vote,
+          memberId: correctMemberId,
+        },
+      });
+    }
+
+    // Cập nhật comments với member ID chính xác
+    for (const comment of initialPostComments) {
+      const correctMemberId = userMemberMap.get(comment.memberId);
+      if (!correctMemberId) {
+        throw new Error(`No member found for user ID: ${comment.memberId}`);
+      }
+      await prisma.comment.create({
+        data: {
+          ...comment,
+          memberId: correctMemberId,
+        },
+      });
+    }
+  } catch (err) {
+    console.log(err);
   }
 }
 
