@@ -1,4 +1,4 @@
-import { RegistrationInput } from "./components/registrationForm";
+
 import axios from 'axios'
 
 export const api = {
@@ -7,9 +7,10 @@ export const api = {
       return axios.get('http://localhost:3000/posts?sort=recent')
     }
   },
-  register: (input: RegistrationInput) => {
+  register: (input: any) => {
     return axios.post('http://localhost:3000/users/new', {
       ...input
     })
   }
 }
+

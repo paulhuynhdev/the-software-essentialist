@@ -1,0 +1,19 @@
+name: Best Practices Assignment - Automatically Deploy to Staging
+
+on:
+  workflow_run:
+    workflows: ["Best Practices Assignment - Commit Phase"]
+    branches:
+      - main
+    types:
+      - completed
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to production
+        uses: johnbeynon/render-deploy-action@v0.0.8
+        with:
+          service-id: srv-cuselkrtq21c73b3svfg
+          api-key: ${{ secrets.RENDER_TOKEN }}
