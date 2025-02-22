@@ -4,7 +4,7 @@ on:
   workflow_run:
     workflows: ["Best Practices Assignment - Automatically Deploy to Staging"]
     branches:
-      - feature/minimal-deployment-pipeline
+      - main
     types:
       - completed
 

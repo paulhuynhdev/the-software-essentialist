@@ -4,7 +4,7 @@ on:
   workflow_run:
     workflows: ["Best Practices Assignment - Commit Phase"]
     branches:
-      - feature/minimal-deployment-pipeline
+      - main
     types:
       - completed
 
