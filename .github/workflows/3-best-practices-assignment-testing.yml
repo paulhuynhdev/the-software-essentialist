@@ -2,7 +2,9 @@ name: Best Practices Assignment - Testing on Staging
 
 on:
   workflow_run:
-    workflows: ["Best Practices Assignment - Automatically Deploy to Staging and Production"]
+    workflows: ["Best Practices Assignment - Automatically Deploy to Staging"]
+    branches:
+      - feature/minimal-deployment-pipeline
     types:
       - completed
 
