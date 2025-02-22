@@ -16,6 +16,7 @@
     "build:front": "npm run build --workspace=@dddforum/frontend",
     "build:back": "npm run build --workspace=@dddforum/backend",
     "lint": "npm run lint --workspaces --if-present",
+    "test:unit": "npm run test:unit --workspaces --if-present",
     "start:dev:back": "npm run start:dev --workspace=@dddforum/backend",
     "start:back": "npm run start --workspace=@dddforum/backend",
     "start:dev:front": "npm run start:dev --workspace=@dddforum/frontend",
