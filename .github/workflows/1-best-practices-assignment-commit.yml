@@ -6,7 +6,7 @@ on:
     paths:
       - "ThePhasesOfCraftship/2_best_practice_first/deployment/assignment/begin/**"
     branches:
-      - main # or specify your desired branch
+      - feature/minimal-deployment-pipeline # or specify your desired branch
 
 env:
   PROJECT_PATH: "ThePhasesOfCraftship/2_best_practice_first/deployment/assignment/begin"
