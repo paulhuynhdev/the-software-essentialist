@@ -1,6 +1,4 @@
 
-// api.tsx
-// import { RegistrationInput } from "./components/registrationForm";
 import axios from 'axios'
 
 export const api = {
