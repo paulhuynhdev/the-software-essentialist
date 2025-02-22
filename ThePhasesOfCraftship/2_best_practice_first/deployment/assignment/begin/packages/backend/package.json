@@ -12,7 +12,7 @@
     "start": "npm run migrate && npm run generate && ts-node prepareEnv.ts node build/index.js",
     "start:dev": "npm run migrate && npm run generate && npx nodemon",
     "start:dev:no-watch": "npm run migrate && npm run generate && ts-node prepareEnv.ts ts-node src/index.ts",
-    "lint": "eslint --ext .js,.jsx --ignore-path .gitignore .",
+    "lint": "eslint . --ext .ts --fix",
     "test": "jest",
     "test:dev": "jest --watchAll",
     "test:e2e": "jest -c jest.config.e2e.ts",

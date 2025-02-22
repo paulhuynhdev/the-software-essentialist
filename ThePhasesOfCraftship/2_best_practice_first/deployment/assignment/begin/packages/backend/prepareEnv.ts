@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 
 /**
  * This script allows you to call any other following script with
