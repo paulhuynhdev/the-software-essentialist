@@ -40,6 +40,7 @@ defineFeature(feature, (test) => {
     await databaseFixture.resetDatabase();
   });
 
+  // Need to put timeout here.
   jest.setTimeout(60000);
 
   test('Successful registration with marketing emails accepted', ({ given, when, then, and }) => {
